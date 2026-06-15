@@ -191,8 +191,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
       <div class="student-select" id="studentChips"></div>
     </div>
     <div class="form-group">
-      <label>星期</label>
-      <select id="classDay"></select>
+      <label>上课日期（可多选）</label>
+      <div class="student-select" id="dayChips"></div>
     </div>
     <div class="form-group" style="display:flex;gap:10px">
       <div style="flex:1"><label>开始时间</label><input type="time" id="classStart"></div>
@@ -268,6 +268,7 @@ let selectedDayIdx = 0; // 0=Mon, 6=Sun
 let editingClassId = null;
 let editingStudentId = null;
 let selectedStudentIds = [];
+let selectedDayIdxs = [];
 
 function getMonday(d) { const r = new Date(d); r.setHours(0,0,0,0); const day = r.getDay(); const diff = day === 0 ? -6 : 1 - day; r.setDate(r.getDate() + diff); return r; }
 function fmtDate(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
@@ -322,7 +323,11 @@ function renderCalendar() {
   today.setHours(0,0,0,0);
   const weekStr = fmtLocalDate(currentWeekStart);
   const allWeekClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
-  const daysWithClass = new Set(allWeekClasses.map(c => c.dayIdx));
+  const daysWithClass = new Set();
+  allWeekClasses.forEach(c => {
+    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
+    days.forEach(d => daysWithClass.add(d));
+  });
 
   let dayTabsHTML = '';
   for (let i = 0; i < 7; i++) {
@@ -339,9 +344,11 @@ function renderCalendar() {
   }
   document.getElementById('dayTabs').innerHTML = dayTabsHTML;
 
-  // 当前天的课程
+  // 当前天的课程（兼容dayIdx旧格式和dayIdxs新格式）
   const allClasses = DB.getClasses().filter(c => {
-    return c.weekStart === weekStr && c.dayIdx === selectedDayIdx;
+    if (c.weekStart !== weekStr) return false;
+    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
+    return days.includes(selectedDayIdx);
   });
   allClasses.sort((a,b) => a.startTime.localeCompare(b.startTime));
 
@@ -390,25 +397,34 @@ function selectDay(i) {
 }
 
 // ========== 课程弹窗 ==========
-function populateDaySelect() {
-  const sel = document.getElementById('classDay');
-  sel.innerHTML = '';
+function renderDayChips() {
+  const container = document.getElementById('dayChips');
+  let html = '';
   for (let i = 0; i < 7; i++) {
     const d = getDayDate(i);
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `周${weekDayName(i)} · ${fmtDate(d)}`;
-    sel.appendChild(opt);
+    const sel = selectedDayIdxs.includes(i);
+    html += `<span class="student-chip${sel ? ' selected' : ''}" onclick="toggleDayChip(${i}, this)">周${weekDayName(i)} · ${fmtDate(d)}</span>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleDayChip(i, el) {
+  if (selectedDayIdxs.includes(i)) {
+    selectedDayIdxs = selectedDayIdxs.filter(x => x !== i);
+    el.classList.remove('selected');
+  } else {
+    selectedDayIdxs.push(i);
+    el.classList.add('selected');
   }
 }
 
 function showClassModal() {
   editingClassId = null;
   selectedStudentIds = [];
+  selectedDayIdxs = [selectedDayIdx];
   document.getElementById('classModalTitle').textContent = '添加课程';
   document.getElementById('classDeleteBtn').classList.add('hidden');
-  populateDaySelect();
-  document.getElementById('classDay').value = selectedDayIdx;
+  renderDayChips();
   document.getElementById('classStart').value = '18:00';
   document.getElementById('classEnd').value = '19:30';
   renderStudentChips();
@@ -420,10 +436,10 @@ function editClass(id) {
   if (!c) return;
   editingClassId = id;
   selectedStudentIds = [...(c.studentIds || [])];
+  selectedDayIdxs = c.dayIdxs ? [...c.dayIdxs] : (c.dayIdx !== undefined ? [c.dayIdx] : [selectedDayIdx]);
   document.getElementById('classModalTitle').textContent = '编辑课程';
   document.getElementById('classDeleteBtn').classList.remove('hidden');
-  populateDaySelect();
-  document.getElementById('classDay').value = c.dayIdx;
+  renderDayChips();
   document.getElementById('classStart').value = c.startTime;
   document.getElementById('classEnd').value = c.endTime;
   renderStudentChips();
@@ -435,22 +451,23 @@ function closeModal(id) {
   editingClassId = null;
   editingStudentId = null;
   selectedStudentIds = [];
+  selectedDayIdxs = [];
 }
 
 function saveClass() {
-  const dayIdx = parseInt(document.getElementById('classDay').value);
   const startTime = document.getElementById('classStart').value;
   const endTime = document.getElementById('classEnd').value;
 
   if (!startTime || !endTime) { toast('请选择时间'); return; }
   if (startTime >= endTime) { toast('结束时间必须晚于开始时间'); return; }
   if (selectedStudentIds.length === 0) { toast('请至少选择一个学生'); return; }
+  if (selectedDayIdxs.length === 0) { toast('请至少选择一个日期'); return; }
 
   const classes = DB.getClasses();
   if (editingClassId) {
     const idx = classes.findIndex(c => c.id === editingClassId);
     if (idx >= 0) {
-      classes[idx].dayIdx = dayIdx;
+      classes[idx].dayIdxs = [...selectedDayIdxs].sort();
       classes[idx].startTime = startTime;
       classes[idx].endTime = endTime;
       classes[idx].studentIds = [...selectedStudentIds];
@@ -459,7 +476,8 @@ function saveClass() {
   } else {
     classes.push({
       id: 'c_' + Date.now(),
-      dayIdx, startTime, endTime,
+      dayIdxs: [...selectedDayIdxs].sort(),
+      startTime, endTime,
       studentIds: [...selectedStudentIds],
       weekStart: fmtLocalDate(currentWeekStart),
     });
@@ -576,11 +594,12 @@ function generateShareLink() {
 
   if (weekClasses.length === 0) { toast('本周没有课程可分享'); return; }
 
-  // 构建脱敏数据，数组格式省空间：[dayIdx, start, end, [names], [grades], [subjects]]
+  // 构建脱敏数据，数组格式省空间：[[dayIdxs], start, end, [names], [grades], [subjects]]
   const shareData = weekClasses.map(c => {
     const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
+    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
     return [
-      c.dayIdx,
+      days,
       c.startTime.slice(0,5),
       c.endTime.slice(0,5),
       stus.map(s => s.codeName),
@@ -624,18 +643,21 @@ function showShareView(hash) {
     document.getElementById('shareWeekLabel').textContent =
       `${weekStart.getFullYear()}年 ${fmtDate(weekStart)} - ${fmtDate(weekEnd)}`;
 
-    // 兼容新旧格式：新格式是数组 [d,s,e,n,g,b]，旧格式是对象 {d,s,e,n,g,b}
+    // 兼容新旧格式：新格式数组 [days[], s, e, n, g, b]，旧格式对象 {d, s, e, n, g, b}
     function norm(c) {
       if (Array.isArray(c)) return { d:c[0], s:c[1], e:c[2], n:c[3], g:c[4]||[], b:c[5]||[] };
-      return c;
+      return { d: c.d, s: c.s, e: c.e, n: c.n, g: c.g||[], b: c.b||[] };
     }
 
-    // 按天分组
+    // 按天分组（支持单日和多日）
     const byDay = {};
     data.c.forEach(c => {
       const x = norm(c);
-      if (!byDay[x.d]) byDay[x.d] = [];
-      byDay[x.d].push(x);
+      const days = Array.isArray(x.d) ? x.d : [x.d];
+      days.forEach(day => {
+        if (!byDay[day]) byDay[day] = [];
+        byDay[day].push(x);
+      });
     });
 
     let html = '';
@@ -716,6 +738,7 @@ document.addEventListener('click', function(e) {
     editingClassId = null;
     editingStudentId = null;
     selectedStudentIds = [];
+    selectedDayIdxs = [];
   }
 });
 
