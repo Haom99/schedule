@@ -347,11 +347,24 @@ function selectDay(i) {
 }
 
 // ========== 课程弹窗 ==========
+function populateDaySelect() {
+  const sel = document.getElementById('classDay');
+  sel.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = getDayDate(i);
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `周${weekDayName(i)} · ${fmtDate(d)}`;
+    sel.appendChild(opt);
+  }
+}
+
 function showClassModal() {
   editingClassId = null;
   selectedStudentIds = [];
   document.getElementById('classModalTitle').textContent = '添加课程';
   document.getElementById('classDeleteBtn').classList.add('hidden');
+  populateDaySelect();
   document.getElementById('classDay').value = selectedDayIdx;
   document.getElementById('classStart').value = '18:00';
   document.getElementById('classEnd').value = '19:30';
@@ -366,6 +379,7 @@ function editClass(id) {
   selectedStudentIds = [...(c.studentIds || [])];
   document.getElementById('classModalTitle').textContent = '编辑课程';
   document.getElementById('classDeleteBtn').classList.remove('hidden');
+  populateDaySelect();
   document.getElementById('classDay').value = c.dayIdx;
   document.getElementById('classStart').value = c.startTime;
   document.getElementById('classEnd').value = c.endTime;
