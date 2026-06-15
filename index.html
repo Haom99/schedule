@@ -232,9 +232,10 @@ header h1 { font-size: 18px; }
 // ========== 数据层 ==========
 const DB = {
   getStudents() { try { return JSON.parse(localStorage.schedule_students || '[]'); } catch(e) { return []; } },
-  setStudents(v) { localStorage.schedule_students = JSON.stringify(v); },
+  setStudents(v) { try { localStorage.schedule_students = JSON.stringify(v); } catch(e) { console.error(e); alert('保存失败：浏览器存储不可用'); } },
   getClasses() { try { return JSON.parse(localStorage.schedule_classes || '[]'); } catch(e) { return []; } },
-  setClasses(v) { localStorage.schedule_classes = JSON.stringify(v); },
+  setClasses(v) { try { localStorage.schedule_classes = JSON.stringify(v); } catch(e) { console.error(e); alert('保存失败：浏览器存储不可用'); } },
+  ok() { try { localStorage._test=1; delete localStorage._test; return true; } catch(e) { return false; } }
 };
 
 let currentWeekStart = getMonday(new Date());
@@ -313,7 +314,17 @@ function renderCalendar() {
   const students = DB.getStudents();
   let html = '';
   if (allClasses.length === 0) {
-    html = '<div class="empty"><div class="icon">📭</div><div>这天没课，点右下角 + 添加</div></div>';
+    const total = DB.getClasses().length;
+    const weekClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
+    html = '<div class="empty"><div class="icon">📭</div><div>这天没课</div>';
+    html += '<div style="font-size:12px;color:#999;margin-top:8px">总课程：'+total+'条 | 本周('+weekStr+')共：'+weekClasses.length+'条 | 当前天('+selectedDayIdx+'/'+weekDayName(selectedDayIdx)+')</div>';
+    if (weekClasses.length > 0) {
+      html += '<div style="font-size:12px;color:#f90;margin-top:4px">⚠ 本周有课但不在当天，请切换天标签</div>';
+    }
+    if (total > 0 && weekClasses.length === 0) {
+      html += '<div style="font-size:12px;color:#f90;margin-top:4px">⚠ 有课程但不在本周，请切换周</div>';
+    }
+    html += '</div>';
   } else {
     allClasses.forEach(c => {
       const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
@@ -424,6 +435,7 @@ function saveClass() {
   DB.setClasses(classes);
   closeModal('classModal');
   renderCalendar();
+  toast('✅ 已保存！本周共' + DB.getClasses().filter(c => c.weekStart === fmtLocalDate(currentWeekStart)).length + '节课');
 }
 
 function deleteClass() {
