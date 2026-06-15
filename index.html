@@ -544,17 +544,17 @@ function generateShareLink() {
 
   if (weekClasses.length === 0) { toast('本周没有课程可分享'); return; }
 
-  // 构建脱敏数据
+  // 构建脱敏数据，数组格式省空间：[dayIdx, start, end, [names], [grades], [subjects]]
   const shareData = weekClasses.map(c => {
     const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-    return {
-      d: c.dayIdx,
-      s: c.startTime.slice(0,5),
-      e: c.endTime.slice(0,5),
-      n: stus.map(s => s.codeName),
-      g: [...new Set(stus.map(s => s.grade).filter(Boolean))],
-      b: [...new Set(stus.map(s => s.subject).filter(Boolean))],
-    };
+    return [
+      c.dayIdx,
+      c.startTime.slice(0,5),
+      c.endTime.slice(0,5),
+      stus.map(s => s.codeName),
+      [...new Set(stus.map(s => s.grade).filter(Boolean))],
+      [...new Set(stus.map(s => s.subject).filter(Boolean))],
+    ];
   });
 
   const payload = {
@@ -592,11 +592,18 @@ function showShareView(hash) {
     document.getElementById('shareWeekLabel').textContent =
       `${weekStart.getFullYear()}年 ${fmtDate(weekStart)} - ${fmtDate(weekEnd)}`;
 
+    // 兼容新旧格式：新格式是数组 [d,s,e,n,g,b]，旧格式是对象 {d,s,e,n,g,b}
+    function norm(c) {
+      if (Array.isArray(c)) return { d:c[0], s:c[1], e:c[2], n:c[3], g:c[4]||[], b:c[5]||[] };
+      return c;
+    }
+
     // 按天分组
     const byDay = {};
     data.c.forEach(c => {
-      if (!byDay[c.d]) byDay[c.d] = [];
-      byDay[c.d].push(c);
+      const x = norm(c);
+      if (!byDay[x.d]) byDay[x.d] = [];
+      byDay[x.d].push(x);
     });
 
     let html = '';
