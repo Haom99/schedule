@@ -304,9 +304,9 @@ function renderCalendar() {
   document.getElementById('dayTabs').innerHTML = dayTabsHTML;
 
   // 当前天的课程
+  const weekStr = fmtLocalDate(currentWeekStart);
   const allClasses = DB.getClasses().filter(c => {
-    const cDate = c.weekStart ? new Date(c.weekStart) : null;
-    return cDate && cDate.getTime() === currentWeekStart.getTime() && c.dayIdx === selectedDayIdx;
+    return c.weekStart === weekStr && c.dayIdx === selectedDayIdx;
   });
   allClasses.sort((a,b) => a.startTime.localeCompare(b.startTime));
 
@@ -336,8 +336,7 @@ function renderCalendar() {
 
   // 分享按钮
   const hasClasses = DB.getClasses().some(c => {
-    const cDate = c.weekStart ? new Date(c.weekStart) : null;
-    return cDate && cDate.getTime() === currentWeekStart.getTime();
+    return c.weekStart === fmtLocalDate(currentWeekStart);
   });
   document.getElementById('shareBar').classList.toggle('hidden', !hasClasses);
 }
@@ -528,8 +527,7 @@ function deleteStudent() {
 function generateShareLink() {
   const students = DB.getStudents();
   const weekClasses = DB.getClasses().filter(c => {
-    const cDate = c.weekStart ? new Date(c.weekStart) : null;
-    return cDate && cDate.getTime() === currentWeekStart.getTime();
+    return c.weekStart === fmtLocalDate(currentWeekStart);
   });
 
   if (weekClasses.length === 0) { toast('本周没有课程可分享'); return; }
