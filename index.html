@@ -245,6 +245,7 @@ let selectedStudentIds = [];
 
 function getMonday(d) { const r = new Date(d); r.setHours(0,0,0,0); const day = r.getDay(); const diff = day === 0 ? -6 : 1 - day; r.setDate(r.getDate() + diff); return r; }
 function fmtDate(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+function fmtLocalDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function weekDayName(i) { return ['一','二','三','四','五','六','日'][i]; }
 function getDayDate(i) { const d = new Date(currentWeekStart); d.setDate(d.getDate() + i); return d; }
 
@@ -411,14 +412,14 @@ function saveClass() {
       classes[idx].startTime = startTime;
       classes[idx].endTime = endTime;
       classes[idx].studentIds = [...selectedStudentIds];
-      classes[idx].weekStart = currentWeekStart.toISOString().slice(0,10);
+      classes[idx].weekStart = fmtLocalDate(currentWeekStart);
     }
   } else {
     classes.push({
       id: 'c_' + Date.now(),
       dayIdx, startTime, endTime,
       studentIds: [...selectedStudentIds],
-      weekStart: currentWeekStart.toISOString().slice(0,10),
+      weekStart: fmtLocalDate(currentWeekStart),
     });
   }
   DB.setClasses(classes);
@@ -547,7 +548,7 @@ function generateShareLink() {
   });
 
   const payload = {
-    w: currentWeekStart.toISOString().slice(0,10),
+    w: fmtLocalDate(currentWeekStart),
     c: shareData
   };
 
