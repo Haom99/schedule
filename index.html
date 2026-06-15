@@ -340,7 +340,6 @@ function renderCalendar() {
   document.getElementById('dayTabs').innerHTML = dayTabsHTML;
 
   // 当前天的课程
-  const weekStr = fmtLocalDate(currentWeekStart);
   const allClasses = DB.getClasses().filter(c => {
     return c.weekStart === weekStr && c.dayIdx === selectedDayIdx;
   });
