@@ -27,6 +27,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFa
 header { background: rgba(255,255,255,.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,.04); }
 header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 
+/* 同步状态灯 */
+.sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.sync-dot.ok { background: #4CAF50; }
+.sync-dot.err { background: #FF4757; }
+.sync-dot.off { background: #ccc; }
+
 /* 标签 */
 .tabs { display: flex; margin: 12px 12px 0; background: rgba(0,0,0,.04); border-radius: 12px; padding: 3px; gap: 3px; }
 .tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; cursor: pointer; border-radius: 10px; font-weight: 500; color: var(--text2); transition: .25s; }
@@ -43,7 +49,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .week-nav button:active { background: #f0f0f5; transform: scale(.94); }
 .week-nav .week-label { font-size: 15px; font-weight: 700; min-width: 200px; text-align: center; letter-spacing: -.2px; }
 
-/* 天选择器 - 横向滑动卡片 */
+/* 天选择器 */
 .day-strip { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .day-strip::-webkit-scrollbar { display: none; }
 .day-chip { flex-shrink: 0; width: 62px; padding: 10px 0; border-radius: 14px; text-align: center; cursor: pointer; background: var(--card); box-shadow: var(--shadow); transition: .25s; position: relative; }
@@ -75,10 +81,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .week-day-header .wd-date { font-size: 12px; color: var(--text2); font-weight: 400; margin-left: auto; }
 .week-empty-day { padding: 4px 14px 2px; font-size: 12px; color: var(--text3); }
 
-/* 截图按钮 */
-.screenshot-bar { padding: 0 12px 8px; }
-.screenshot-bar .btn { width: 100%; }
-
 /* 空状态 */
 .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
 .empty .icon { font-size: 64px; margin-bottom: 16px; opacity: .6; }
@@ -95,7 +97,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .fab { position: fixed; bottom: 28px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #388E3C, #66BB6A); color: #fff; font-size: 28px; border: none; box-shadow: 0 6px 20px rgba(56,142,60,.4); cursor: pointer; z-index: 5; transition: .25s; display: flex; align-items: center; justify-content: center; }
 .fab:active { transform: scale(.9); box-shadow: 0 3px 10px rgba(56,142,60,.3); }
 
-/* 弹窗 - 毛玻璃效果 */
+/* 弹窗 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
 .modal { background: rgba(255,255,255,.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); width: 100%; max-width: 560px; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; max-height: 85vh; overflow-y: auto; animation: slideUp .3s cubic-bezier(.16,1,.3,1); box-shadow: 0 -8px 40px rgba(0,0,0,.08); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -106,6 +108,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(56,142,60,.1); }
 .form-actions { display: flex; gap: 10px; margin-top: 24px; }
 .form-actions button { flex: 1; }
+.token-hint { font-size: 12px; color: var(--text3); margin-top: 6px; }
+.token-hint a { color: var(--primary); }
 
 /* 学生列表 */
 .student-list { padding: 12px; }
@@ -131,7 +135,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .student-chip { display: inline-block; padding: 9px 16px; margin: 3px; border: 1.5px solid #E8E9F0; border-radius: 22px; font-size: 13px; cursor: pointer; background: #F8F9FC; transition: .2s; font-weight: 500; }
 .student-chip.selected { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(56,142,60,.25); }
 
-/* 周概览指示器 */
 .day-strip-header { font-size: 12px; color: var(--text3); padding: 0 14px 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
 </style>
 </head>
@@ -141,7 +144,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 <div id="adminView">
   <header>
     <h1>&#x1F4C5; 张老师课表</h1>
-    <div style="display:flex;gap:6px">
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="sync-dot off" id="syncDot" title="同步状态"></span>
       <button class="btn btn-outline btn-sm" onclick="showExportModal()">备份</button>
     </div>
   </header>
@@ -160,7 +164,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
       <button class="btn btn-outline btn-sm" onclick="goToday()">今天</button>
     </div>
 
-    <!-- 日/周视图切换 -->
     <div class="view-toggle" id="viewToggle">
       <div class="vt active" onclick="setViewMode('day')">日视图</div>
       <div class="vt" onclick="setViewMode('week')">周视图</div>
@@ -191,7 +194,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   <button class="fab hidden" id="fabAdd" onclick="showClassModal()">+</button>
 </div>
 
-<!-- 分享视图（学管看到的） -->
+<!-- 分享视图 -->
 <div id="shareView" class="hidden">
   <div class="share-header">
     <h2>&#x1F4C5; 课程安排</h2>
@@ -228,7 +231,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   </div>
 </div>
 
-<!-- 弹窗：添加/编辑学生 -->
+<!-- 弹窗：学生 -->
 <div class="modal-overlay hidden" id="studentModal">
   <div class="modal">
     <h3 id="studentModalTitle">添加学生</h3>
@@ -261,10 +264,27 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   </div>
 </div>
 
-<!-- 弹窗：备份/恢复 -->
+<!-- 弹窗：备份/同步设置 -->
 <div class="modal-overlay hidden" id="exportModal">
   <div class="modal">
-    <h3>数据备份</h3>
+    <h3>备份 & 同步</h3>
+
+    <div class="form-group">
+      <label>同步状态：<span id="syncStatus">检查中...</span></label>
+    </div>
+
+    <div class="form-group">
+      <label>GitHub Token（配好后自动云端同步）</label>
+      <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+      <div class="token-hint">
+        <a href="https://github.com/settings/tokens" target="_blank">创建 token</a> → 勾选 repo → 生成后粘贴到这里
+      </div>
+    </div>
+    <div class="form-actions" style="flex-direction:column">
+      <button class="btn btn-primary btn-block" id="syncSaveBtn" onclick="saveSyncConfig()">&#x2601;&#xFE0F; 保存并同步</button>
+      <button class="btn btn-outline btn-block" onclick="manualSync()">&#x1F504; 手动同步</button>
+    </div>
+    <hr style="margin:20px 0;border:none;border-top:1px solid #E8E9F0">
     <div class="form-actions" style="flex-direction:column">
       <button class="btn btn-primary btn-block" onclick="exportData()">&#x1F4E5; 导出数据文件</button>
       <button class="btn btn-outline btn-block" onclick="document.getElementById('importFile').click()">&#x1F4E4; 导入数据文件</button>
@@ -286,9 +306,160 @@ const DB = {
   ok() { try { localStorage._test=1; delete localStorage._test; return true; } catch(e) { return false; } }
 };
 
+// ========== 云端同步 ==========
+const SYNC = {
+  REPO: 'Haom99/schedule',
+  FILE: 'data.json',
+  BRANCH: 'main',
+
+  getToken() { return localStorage.sync_token || ''; },
+  setToken(t) { localStorage.sync_token = t; },
+  hasToken() { return !!this.getToken(); },
+
+  // 读远程数据（无需 token，公开仓库可直读）
+  async pull() {
+    const url = `https://raw.githubusercontent.com/${this.REPO}/${this.BRANCH}/${this.FILE}`;
+    const resp = await fetch(url, { cache: 'no-store' });
+    if (!resp.ok) throw new Error('远程数据不存在或网络错误');
+    return await resp.json();
+  },
+
+  // 写远程数据
+  async push(data) {
+    const token = this.getToken();
+    if (!token) throw new Error('未配置 Token');
+
+    // 先获取当前文件 SHA
+    const apiUrl = `https://api.github.com/repos/${this.REPO}/contents/${this.FILE}`;
+    let sha = '';
+    try {
+      const r = await fetch(apiUrl, { headers: { Authorization: 'Bearer ' + token } });
+      if (r.ok) { const j = await r.json(); sha = j.sha; }
+    } catch(e) {}
+
+    const content = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(data))));
+    const body = JSON.stringify({
+      message: 'sync: ' + new Date().toLocaleString('zh-CN'),
+      content: content,
+      branch: this.BRANCH
+    });
+    if (sha) body.sha = sha; // 更新已有文件需要 sha
+
+    const resp = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: sha ? JSON.stringify({ message: 'sync: ' + new Date().toLocaleString('zh-CN'), content, sha, branch: this.BRANCH }) :
+                  JSON.stringify({ message: 'sync: ' + new Date().toLocaleString('zh-CN'), content, branch: this.BRANCH })
+    });
+
+    if (!resp.ok) {
+      const e = await resp.json().catch(() => ({}));
+      throw new Error(e.message || '推送失败');
+    }
+    return true;
+  },
+
+  // 双向合并：远程数据优先，本地新增的保留
+  merge(localData, remoteData) {
+    const merged = {
+      students: [...(remoteData.students || [])],
+      classes: [...(remoteData.classes || [])]
+    };
+
+    // 把本地有但远程没有的数据补进去
+    const remoteStudentIds = new Set(merged.students.map(s => s.id));
+    const remoteClassIds = new Set(merged.classes.map(c => c.id));
+
+    (localData.students || []).forEach(s => {
+      if (!remoteStudentIds.has(s.id)) merged.students.push(s);
+    });
+    (localData.classes || []).forEach(c => {
+      if (!remoteClassIds.has(c.id)) merged.classes.push(c);
+    });
+
+    return merged;
+  },
+
+  // 完整拉取合并流程
+  async syncFromCloud() {
+    if (!this.hasToken()) {
+      this.updateDot('off');
+      return false;
+    }
+    try {
+      const remote = await this.pull();
+      if (!remote || !remote._version) throw new Error('数据格式不对');
+
+      const local = { students: DB.getStudents(), classes: DB.getClasses() };
+      const localVer = parseInt(localStorage.sync_version || '0');
+      const remoteVer = parseInt(remote._version || '0');
+
+      if (remoteVer > localVer) {
+        // 远程更新，合并写入本地
+        const merged = this.merge(local, remote);
+        DB.setStudents(merged.students);
+        DB.setClasses(merged.classes);
+        localStorage.sync_version = remoteVer;
+        this.updateDot('ok');
+        return true;
+      } else if (remoteVer < localVer) {
+        // 本地更新，推上去
+        await this.pushToCloud();
+        this.updateDot('ok');
+        return true;
+      } else {
+        this.updateDot('ok');
+        return false; // 版本一致
+      }
+    } catch(e) {
+      console.error('同步失败:', e);
+      this.updateDot('err');
+      return false;
+    }
+  },
+
+  // 推送本地到云端
+  async pushToCloud() {
+    if (!this.hasToken()) {
+      this.updateDot('off');
+      return false;
+    }
+    try {
+      const data = {
+        students: DB.getStudents(),
+        classes: DB.getClasses(),
+        _version: Date.now(),
+        _updated: new Date().toISOString()
+      };
+      await this.push(data);
+      localStorage.sync_version = data._version;
+      this.updateDot('ok');
+      return true;
+    } catch(e) {
+      console.error('推送失败:', e);
+      this.updateDot('err');
+      return false;
+    }
+  },
+
+  updateDot(state) {
+    const dot = document.getElementById('syncDot');
+    if (dot) {
+      dot.className = 'sync-dot ' + state;
+      dot.title = { ok: '已同步', err: '同步失败', off: '未配置同步' }[state] || '';
+    }
+    const st = document.getElementById('syncStatus');
+    if (st) st.textContent = { ok: '✅ 已同步', err: '❌ 同步失败', off: '⚙️ 未配置' }[state] || '';
+  }
+};
+
+// ========== 全局变量 ==========
 let currentWeekStart = getMonday(new Date());
-let selectedDayIdx = 0; // 0=Mon, 6=Sun
-let viewMode = 'day'; // 'day' | 'week'
+let selectedDayIdx = 0;
+let viewMode = 'day';
 let editingClassId = null;
 let editingStudentId = null;
 let selectedStudentIds = [];
@@ -301,12 +472,20 @@ function weekDayName(i) { return ['一','二','三','四','五','六','日'][i];
 function getDayDate(i) { const d = new Date(currentWeekStart); d.setDate(d.getDate() + i); return d; }
 
 // ========== 初始化 ==========
-function init() {
+async function init() {
   const hash = window.location.hash.slice(1);
   if (hash) {
     showShareView(hash);
   } else {
     showAdminView();
+    // 异步拉云端数据
+    if (SYNC.hasToken()) {
+      const updated = await SYNC.syncFromCloud();
+      if (updated) {
+        renderAll();
+        toast('✅ 已同步最新数据');
+      }
+    }
   }
 }
 
@@ -319,7 +498,7 @@ function showAdminView() {
 
 // ========== 标签切换 ==========
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
+  document.querySelectorAll('.tabs .tab').forEach((t,i) => {
     t.classList.toggle('active', (tab === 'schedule' && i === 0) || (tab === 'students' && i === 1));
   });
   document.getElementById('scheduleView').classList.toggle('hidden', tab !== 'schedule');
@@ -329,13 +508,12 @@ function switchTab(tab) {
   if (tab === 'students') renderStudentList();
 }
 
-// ========== 日/周视图切换 ==========
+// ========== 日/周视图 ==========
 function setViewMode(mode) {
   viewMode = mode;
-  document.querySelectorAll('.view-toggle .vt').forEach((el, i) => {
+  document.querySelectorAll('.view-toggle .vt').forEach((el,i) => {
     el.classList.toggle('active', (mode === 'day' && i === 0) || (mode === 'week' && i === 1));
   });
-  // 日视图显示天标签条，周视图隐藏
   document.getElementById('dayTabs').classList.toggle('hidden', mode === 'week');
   renderCalendar();
 }
@@ -349,32 +527,25 @@ function goToday() { currentWeekStart = getMonday(new Date()); renderCalendar();
 function renderCalendar() {
   const endDate = new Date(currentWeekStart);
   endDate.setDate(endDate.getDate() + 6);
-
   document.getElementById('weekLabel').textContent =
     `${currentWeekStart.getFullYear()}年 ${fmtDate(currentWeekStart)} - ${fmtDate(endDate)}`;
 
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
   const weekStr = fmtLocalDate(currentWeekStart);
   const allWeekClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
   const daysWithClass = new Set();
   allWeekClasses.forEach(c => {
-    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-    days.forEach(d => daysWithClass.add(d));
+    (c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : [])).forEach(d => daysWithClass.add(d));
   });
 
-  // 天标签条（日视图显示）
+  // 天标签条
   let dayTabsHTML = '';
   for (let i = 0; i < 7; i++) {
     const d = getDayDate(i);
     const isToday = d.getTime() === today.getTime();
-    const active = i === selectedDayIdx ? ' active' : '';
-    const hasClass = daysWithClass.has(i) ? ' has-class' : '';
-    dayTabsHTML += `<div class="day-chip${active}${hasClass}" onclick="selectDay(${i})">
-      <div class="chip-day">周${weekDayName(i)}</div>
-      <div class="chip-date">${d.getDate()}</div>
-      ${isToday ? '<div class="chip-today">今天</div>' : ''}
-      <div class="chip-dot"></div>
+    dayTabsHTML += `<div class="day-chip${i === selectedDayIdx ? ' active' : ''}${daysWithClass.has(i) ? ' has-class' : ''}" onclick="selectDay(${i})">
+      <div class="chip-day">周${weekDayName(i)}</div><div class="chip-date">${d.getDate()}</div>
+      ${isToday ? '<div class="chip-today">今天</div>' : ''}<div class="chip-dot"></div>
     </div>`;
   }
   document.getElementById('dayTabs').innerHTML = dayTabsHTML;
@@ -382,498 +553,283 @@ function renderCalendar() {
   const students = DB.getStudents();
 
   if (viewMode === 'week') {
-    // ---- 周视图：所有天纵向排列 ----
-    let html = '';
-    let totalClasses = 0;
+    let html = '', total = 0;
     for (let i = 0; i < 7; i++) {
       const dayClasses = allWeekClasses.filter(c => {
-        const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-        return days.includes(i);
-      }).sort((a, b) => a.startTime.localeCompare(b.startTime));
-
+        return (c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : [])).includes(i);
+      }).sort((a,b) => a.startTime.localeCompare(b.startTime));
       const d = getDayDate(i);
-      const isToday = d.getTime() === today.getTime();
-      html += `<div class="week-day-header">
-        <span class="wd-dot"></span>周${weekDayName(i)} · ${fmtDate(d)}${isToday ? ' 今天' : ''}
-        <span class="wd-date">${dayClasses.length}节</span>
-      </div>`;
-
-      if (dayClasses.length === 0) {
-        html += '<div class="week-empty-day">这天没课</div>';
-      } else {
-        dayClasses.forEach(c => {
-          const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-          const names = stus.map(s => s.codeName).join('、');
-          const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
-          html += `<div class="class-card" onclick="editClass('${c.id}')">
-            <div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div>
-            <div class="card-info">
-              <div class="card-names">${names || '未指定'}</div>
-              <div class="card-tags">
-                ${grades.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
-              </div>
-            </div>
-          </div>`;
-        });
-        totalClasses += dayClasses.length;
-      }
+      html += `<div class="week-day-header"><span class="wd-dot"></span>周${weekDayName(i)} · ${fmtDate(d)}${d.getTime()===today.getTime()?' 今天':''}<span class="wd-date">${dayClasses.length}节</span></div>`;
+      if (dayClasses.length === 0) { html += '<div class="week-empty-day">这天没课</div>'; }
+      else { dayClasses.forEach(c => { const stus = (c.studentIds||[]).map(id=>students.find(s=>s.id===id)).filter(Boolean); html += `<div class="class-card" onclick="editClass('${c.id}')"><div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div><div class="card-info"><div class="card-names">${stus.map(s=>s.codeName).join('、')||'未指定'}</div><div class="card-tags">${[...new Set(stus.map(s=>s.grade).filter(Boolean))].map(g=>'<span class="tag tag-grade">'+g+'</span>').join('')}</div></div></div>`; }); total+=dayClasses.length; }
     }
-    if (totalClasses === 0) {
-      html += '<div class="empty"><div class="icon">📭</div><div>本周还没排课</div></div>';
-    }
+    if (total===0) html += '<div class="empty"><div class="icon">📭</div><div>本周还没排课</div></div>';
     document.getElementById('classList').innerHTML = html;
   } else {
-    // ---- 日视图：只显示选中天的课程 ----
-    const dayClasses = allWeekClasses.filter(c => {
-      const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-      return days.includes(selectedDayIdx);
-    }).sort((a, b) => a.startTime.localeCompare(b.startTime));
-
+    const dayClasses = allWeekClasses.filter(c => (c.dayIdxs||(c.dayIdx!==undefined?[c.dayIdx]:[])).includes(selectedDayIdx)).sort((a,b)=>a.startTime.localeCompare(b.startTime));
     let html = '';
-    if (dayClasses.length === 0) {
-      html = '<div class="empty"><div class="icon">📭</div><div>这天没课</div></div>';
-    } else {
-      dayClasses.forEach(c => {
-        const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-        const names = stus.map(s => s.codeName).join('、');
-        const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
-        html += `<div class="class-card" onclick="editClass('${c.id}')">
-          <div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div>
-          <div class="card-info">
-            <div class="card-names">${names || '未指定'}</div>
-            <div class="card-tags">
-              ${grades.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
-            </div>
-          </div>
-        </div>`;
-      });
-    }
+    if (dayClasses.length===0) { html='<div class="empty"><div class="icon">📭</div><div>这天没课</div></div>'; }
+    else { dayClasses.forEach(c=>{ const stus=(c.studentIds||[]).map(id=>students.find(s=>s.id===id)).filter(Boolean); html+=`<div class="class-card" onclick="editClass('${c.id}')"><div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div><div class="card-info"><div class="card-names">${stus.map(s=>s.codeName).join('、')||'未指定'}</div><div class="card-tags">${[...new Set(stus.map(s=>s.grade).filter(Boolean))].map(g=>'<span class="tag tag-grade">'+g+'</span>').join('')}</div></div></div>`; }); }
     document.getElementById('classList').innerHTML = html;
   }
 
-  // 分享按钮
-  const hasClasses = allWeekClasses.length > 0;
-  document.getElementById('shareBar').classList.toggle('hidden', !hasClasses);
+  document.getElementById('shareBar').classList.toggle('hidden', allWeekClasses.length === 0);
 }
 
-function selectDay(i) {
-  selectedDayIdx = i;
-  renderCalendar();
-}
+function selectDay(i) { selectedDayIdx = i; renderCalendar(); }
 
 // ========== 课程弹窗 ==========
 function renderDayChips() {
-  const container = document.getElementById('dayChips');
   let html = '';
   for (let i = 0; i < 7; i++) {
     const d = getDayDate(i);
-    const sel = selectedDayIdxs.includes(i);
-    html += `<span class="student-chip${sel ? ' selected' : ''}" onclick="toggleDayChip(${i}, this)">周${weekDayName(i)} · ${fmtDate(d)}</span>`;
+    html += `<span class="student-chip${selectedDayIdxs.includes(i)?' selected':''}" onclick="toggleDayChip(${i},this)">周${weekDayName(i)} · ${fmtDate(d)}</span>`;
   }
-  container.innerHTML = html;
+  document.getElementById('dayChips').innerHTML = html;
 }
 
-function toggleDayChip(i, el) {
-  if (selectedDayIdxs.includes(i)) {
-    selectedDayIdxs = selectedDayIdxs.filter(x => x !== i);
-    el.classList.remove('selected');
-  } else {
-    selectedDayIdxs.push(i);
-    el.classList.add('selected');
-  }
+function toggleDayChip(i,el) {
+  if (selectedDayIdxs.includes(i)) { selectedDayIdxs=selectedDayIdxs.filter(x=>x!==i); el.classList.remove('selected'); }
+  else { selectedDayIdxs.push(i); el.classList.add('selected'); }
 }
 
 function showClassModal() {
-  editingClassId = null;
-  selectedStudentIds = [];
-  selectedDayIdxs = [selectedDayIdx];
-  document.getElementById('classModalTitle').textContent = '添加课程';
+  editingClassId=null; selectedStudentIds=[]; selectedDayIdxs=[selectedDayIdx];
+  document.getElementById('classModalTitle').textContent='添加课程';
   document.getElementById('classDeleteBtn').classList.add('hidden');
-  renderDayChips();
-  document.getElementById('classStart').value = '18:00';
-  document.getElementById('classEnd').value = '19:30';
-  renderStudentChips();
-  document.getElementById('classModal').classList.remove('hidden');
+  renderDayChips(); document.getElementById('classStart').value='18:00'; document.getElementById('classEnd').value='19:30';
+  renderStudentChips(); document.getElementById('classModal').classList.remove('hidden');
 }
 
 function editClass(id) {
-  const c = DB.getClasses().find(x => x.id === id);
-  if (!c) return;
-  editingClassId = id;
-  selectedStudentIds = [...(c.studentIds || [])];
-  selectedDayIdxs = c.dayIdxs ? [...c.dayIdxs] : (c.dayIdx !== undefined ? [c.dayIdx] : [selectedDayIdx]);
-  document.getElementById('classModalTitle').textContent = '编辑课程';
+  const c=DB.getClasses().find(x=>x.id===id); if(!c) return;
+  editingClassId=id; selectedStudentIds=[...(c.studentIds||[])]; selectedDayIdxs=c.dayIdxs?[...c.dayIdxs]:(c.dayIdx!==undefined?[c.dayIdx]:[selectedDayIdx]);
+  document.getElementById('classModalTitle').textContent='编辑课程';
   document.getElementById('classDeleteBtn').classList.remove('hidden');
-  renderDayChips();
-  document.getElementById('classStart').value = c.startTime;
-  document.getElementById('classEnd').value = c.endTime;
-  renderStudentChips();
-  document.getElementById('classModal').classList.remove('hidden');
+  renderDayChips(); document.getElementById('classStart').value=c.startTime; document.getElementById('classEnd').value=c.endTime;
+  renderStudentChips(); document.getElementById('classModal').classList.remove('hidden');
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.add('hidden');
-  editingClassId = null;
-  editingStudentId = null;
-  selectedStudentIds = [];
-  selectedDayIdxs = [];
-}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); editingClassId=null; editingStudentId=null; selectedStudentIds=[]; selectedDayIdxs=[]; }
 
-function saveClass() {
-  const startTime = document.getElementById('classStart').value;
-  const endTime = document.getElementById('classEnd').value;
+async function saveClass() {
+  const startTime=document.getElementById('classStart').value;
+  const endTime=document.getElementById('classEnd').value;
+  if (!startTime||!endTime) { toast('请选择时间'); return; }
+  if (startTime>=endTime) { toast('结束时间必须晚于开始时间'); return; }
+  if (selectedStudentIds.length===0) { toast('请至少选择一个学生'); return; }
+  if (selectedDayIdxs.length===0) { toast('请至少选择一个日期'); return; }
 
-  if (!startTime || !endTime) { toast('请选择时间'); return; }
-  if (startTime >= endTime) { toast('结束时间必须晚于开始时间'); return; }
-  if (selectedStudentIds.length === 0) { toast('请至少选择一个学生'); return; }
-  if (selectedDayIdxs.length === 0) { toast('请至少选择一个日期'); return; }
-
-  const classes = DB.getClasses();
+  const classes=DB.getClasses();
   if (editingClassId) {
-    const idx = classes.findIndex(c => c.id === editingClassId);
-    if (idx >= 0) {
-      classes[idx].dayIdxs = [...selectedDayIdxs].sort();
-      classes[idx].startTime = startTime;
-      classes[idx].endTime = endTime;
-      classes[idx].studentIds = [...selectedStudentIds];
-      classes[idx].weekStart = fmtLocalDate(currentWeekStart);
-    }
+    const idx=classes.findIndex(c=>c.id===editingClassId);
+    if (idx>=0) { classes[idx].dayIdxs=[...selectedDayIdxs].sort(); classes[idx].startTime=startTime; classes[idx].endTime=endTime; classes[idx].studentIds=[...selectedStudentIds]; classes[idx].weekStart=fmtLocalDate(currentWeekStart); }
   } else {
-    classes.push({
-      id: 'c_' + Date.now(),
-      dayIdxs: [...selectedDayIdxs].sort(),
-      startTime, endTime,
-      studentIds: [...selectedStudentIds],
-      weekStart: fmtLocalDate(currentWeekStart),
-    });
+    classes.push({ id:'c_'+Date.now(), dayIdxs:[...selectedDayIdxs].sort(), startTime,endTime, studentIds:[...selectedStudentIds], weekStart:fmtLocalDate(currentWeekStart) });
   }
   DB.setClasses(classes);
   closeModal('classModal');
   renderCalendar();
-  toast('✅ 已保存！本周共' + DB.getClasses().filter(c => c.weekStart === fmtLocalDate(currentWeekStart)).length + '节课');
+
+  // 自动推送到云端
+  if (SYNC.hasToken()) {
+    const ok = await SYNC.pushToCloud();
+    if (ok) toast('✅ 已保存并同步'); else toast('✅ 已保存（同步失败）');
+  } else {
+    toast('✅ 已保存！本周共'+DB.getClasses().filter(c=>c.weekStart===fmtLocalDate(currentWeekStart)).length+'节课');
+  }
 }
 
-function deleteClass() {
+async function deleteClass() {
   if (!editingClassId) return;
   if (!confirm('确定删除这个课程？')) return;
-  DB.setClasses(DB.getClasses().filter(c => c.id !== editingClassId));
+  DB.setClasses(DB.getClasses().filter(c=>c.id!==editingClassId));
   closeModal('classModal');
   renderCalendar();
+  if (SYNC.hasToken()) await SYNC.pushToCloud();
 }
 
 function renderStudentChips() {
-  const students = DB.getStudents();
-  if (students.length === 0) {
-    document.getElementById('studentChips').innerHTML = '<span style="color:#999;font-size:13px">还没有添加学生，请先去"学生"页添加</span>';
-    return;
-  }
-  document.getElementById('studentChips').innerHTML = students.map(s => {
-    const sel = selectedStudentIds.includes(s.id);
-    return `<span class="student-chip${sel ? ' selected' : ''}" onclick="toggleStudentChip('${s.id}', this)">${s.codeName}</span>`;
+  const students=DB.getStudents();
+  if (students.length===0) { document.getElementById('studentChips').innerHTML='<span style="color:#999;font-size:13px">还没有添加学生，请先去"学生"页添加</span>'; return; }
+  document.getElementById('studentChips').innerHTML=students.map(s=>{
+    return `<span class="student-chip${selectedStudentIds.includes(s.id)?' selected':''}" onclick="toggleStudentChip('${s.id}',this)">${s.codeName}</span>`;
   }).join('');
 }
 
-function toggleStudentChip(id, el) {
-  if (selectedStudentIds.includes(id)) {
-    selectedStudentIds = selectedStudentIds.filter(x => x !== id);
-    el.classList.remove('selected');
-  } else {
-    selectedStudentIds.push(id);
-    el.classList.add('selected');
-  }
+function toggleStudentChip(id,el) {
+  if (selectedStudentIds.includes(id)) { selectedStudentIds=selectedStudentIds.filter(x=>x!==id); el.classList.remove('selected'); }
+  else { selectedStudentIds.push(id); el.classList.add('selected'); }
 }
 
 // ========== 学生管理 ==========
 function renderStudentList() {
-  const students = DB.getStudents();
-  document.getElementById('studentEmpty').classList.toggle('hidden', students.length > 0);
-  document.getElementById('studentList').innerHTML = students.map(s => `
-    <div class="student-card" onclick="editStudent('${s.id}')">
-      <div>
-        <div style="font-weight:600;font-size:15px">${s.codeName}</div>
-        <div class="meta">${[s.grade, s.subject].filter(Boolean).join(' · ') || '未设置年级/科目'}</div>
-      </div>
-      <div class="actions">
-        <span class="tag tag-grade">${s.grade || '未设'}</span>
-        <span class="tag tag-subject">${s.subject || '未设'}</span>
-      </div>
-    </div>
-  `).join('');
+  const students=DB.getStudents();
+  document.getElementById('studentEmpty').classList.toggle('hidden',students.length>0);
+  document.getElementById('studentList').innerHTML=students.map(s=>`<div class="student-card" onclick="editStudent('${s.id}')"><div><div style="font-weight:600;font-size:15px">${s.codeName}</div><div class="meta">${[s.grade,s.subject].filter(Boolean).join(' · ')||'未设置年级/科目'}</div></div><div class="actions"><span class="tag tag-grade">${s.grade||'未设'}</span><span class="tag tag-subject">${s.subject||'未设'}</span></div></div>`).join('');
 }
 
 function showStudentModal() {
-  editingStudentId = null;
-  document.getElementById('studentModalTitle').textContent = '添加学生';
+  editingStudentId=null; document.getElementById('studentModalTitle').textContent='添加学生';
   document.getElementById('stuDeleteBtn').classList.add('hidden');
-  document.getElementById('stuCode').value = '';
-  document.getElementById('stuGrade').value = '';
-  document.getElementById('stuSubject').value = '';
+  document.getElementById('stuCode').value=''; document.getElementById('stuGrade').value=''; document.getElementById('stuSubject').value='';
   document.getElementById('studentModal').classList.remove('hidden');
 }
 
 function editStudent(id) {
-  const s = DB.getStudents().find(x => x.id === id);
-  if (!s) return;
-  editingStudentId = id;
-  document.getElementById('studentModalTitle').textContent = '编辑学生';
+  const s=DB.getStudents().find(x=>x.id===id); if(!s) return;
+  editingStudentId=id; document.getElementById('studentModalTitle').textContent='编辑学生';
   document.getElementById('stuDeleteBtn').classList.remove('hidden');
-  document.getElementById('stuCode').value = s.codeName;
-  document.getElementById('stuGrade').value = s.grade || '';
-  document.getElementById('stuSubject').value = s.subject || '';
+  document.getElementById('stuCode').value=s.codeName; document.getElementById('stuGrade').value=s.grade||''; document.getElementById('stuSubject').value=s.subject||'';
   document.getElementById('studentModal').classList.remove('hidden');
 }
 
-function saveStudent() {
-  const codeName = document.getElementById('stuCode').value.trim();
+async function saveStudent() {
+  const codeName=document.getElementById('stuCode').value.trim();
   if (!codeName) { toast('请输入学生代号'); return; }
-  const grade = document.getElementById('stuGrade').value;
-  const subject = document.getElementById('stuSubject').value;
-
-  const students = DB.getStudents();
-  if (editingStudentId) {
-    const idx = students.findIndex(s => s.id === editingStudentId);
-    if (idx >= 0) { students[idx].codeName = codeName; students[idx].grade = grade; students[idx].subject = subject; }
-  } else {
-    students.push({ id: 's_' + Date.now(), codeName, grade, subject });
-  }
+  const grade=document.getElementById('stuGrade').value;
+  const subject=document.getElementById('stuSubject').value;
+  const students=DB.getStudents();
+  if (editingStudentId) { const idx=students.findIndex(s=>s.id===editingStudentId); if(idx>=0) { students[idx].codeName=codeName; students[idx].grade=grade; students[idx].subject=subject; } }
+  else { students.push({ id:'s_'+Date.now(), codeName, grade, subject }); }
   DB.setStudents(students);
   closeModal('studentModal');
-  renderStudentList();
-  renderCalendar();
+  renderStudentList(); renderCalendar();
+  if (SYNC.hasToken()) await SYNC.pushToCloud();
 }
 
-function deleteStudent() {
+async function deleteStudent() {
   if (!editingStudentId) return;
   if (!confirm('删除学生不会删除已有的课程记录，确定删除？')) return;
-  DB.setStudents(DB.getStudents().filter(s => s.id !== editingStudentId));
-  closeModal('studentModal');
-  renderStudentList();
+  DB.setStudents(DB.getStudents().filter(s=>s.id!==editingStudentId));
+  closeModal('studentModal'); renderStudentList();
+  if (SYNC.hasToken()) await SYNC.pushToCloud();
 }
 
 // ========== 分享（紧凑编码） ==========
-// 编码格式: "weekStart|clz1|clz2|..."  每课: "days;start;end;names;grades"
-// days 用 . 连, names 用 、 连, grades 用 . 连
 function generateShareLink() {
-  const students = DB.getStudents();
-  const weekClasses = DB.getClasses().filter(c => {
-    return c.weekStart === fmtLocalDate(currentWeekStart);
+  const students=DB.getStudents();
+  const weekClasses=DB.getClasses().filter(c=>c.weekStart===fmtLocalDate(currentWeekStart));
+  if (weekClasses.length===0) { toast('本周没有课程可分享'); return; }
+  const lines=[fmtLocalDate(currentWeekStart)];
+  weekClasses.forEach(c=>{
+    const stus=(c.studentIds||[]).map(id=>students.find(s=>s.id===id)).filter(Boolean);
+    const days=(c.dayIdxs||(c.dayIdx!==undefined?[c.dayIdx]:[])).sort().join('.');
+    const names=stus.map(s=>s.codeName).join('、');
+    const grades=[...new Set(stus.map(s=>s.grade).filter(Boolean))].join('.');
+    lines.push([days,c.startTime.slice(0,5),c.endTime.slice(0,5),names,grades].join(';'));
   });
-
-  if (weekClasses.length === 0) { toast('本周没有课程可分享'); return; }
-
-  const lines = [fmtLocalDate(currentWeekStart)];
-  weekClasses.forEach(c => {
-    const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-    const days = (c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : [])).sort().join('.');
-    const names = stus.map(s => s.codeName).join('、');
-    const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))].join('.');
-    lines.push([days, c.startTime.slice(0,5), c.endTime.slice(0,5), names, grades].join(';'));
-  });
-  const raw = lines.join('|');
-  const encoded = btoa(String.fromCharCode(...new TextEncoder().encode(raw)));
-  const link = location.origin + location.pathname + '#' + encoded;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => toast('✅ 分享链接已复制！'));
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = link; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    toast('✅ 分享链接已复制！');
-  }
+  const raw=lines.join('|');
+  const encoded=btoa(String.fromCharCode(...new TextEncoder().encode(raw)));
+  const link=location.origin+location.pathname+'#'+encoded;
+  if (navigator.clipboard) { navigator.clipboard.writeText(link).then(()=>toast('✅ 分享链接已复制！')); }
+  else { const ta=document.createElement('textarea'); ta.value=link; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('✅ 分享链接已复制！'); }
 }
 
-// ========== 分享视图（学管端） ==========
-// 兼容旧 JSON 格式和新紧凑格式
+// ========== 分享视图 ==========
 function showShareView(hash) {
   document.getElementById('adminView').classList.add('hidden');
   document.getElementById('shareView').classList.remove('hidden');
-
   try {
-    const decoded = new TextDecoder().decode(Uint8Array.from(atob(hash).split('').map(c => c.charCodeAt(0))));
-    let weekStart, classes = [];
-
+    const decoded=new TextDecoder().decode(Uint8Array.from(atob(hash).split('').map(c=>c.charCodeAt(0))));
+    let weekStart,classes=[];
     if (decoded.startsWith('{')) {
-      // 旧 JSON 格式: {"w":"...","c":[[...],...]}
-      const data = JSON.parse(decoded);
-      weekStart = new Date(data.w + 'T00:00:00');
-      data.c.forEach(raw => {
-        const c = Array.isArray(raw) ? { d:raw[0], s:raw[1], e:raw[2], n:raw[3], g:raw[4]||[], b:raw[5]||[] } : raw;
-        (Array.isArray(c.d) ? c.d : [c.d]).forEach(day => {
-          classes.push({ s:c.s, e:c.e, n:c.n, g:c.g||[], b:c.b||[], day });
-        });
-      });
+      const data=JSON.parse(decoded);
+      weekStart=new Date(data.w+'T00:00:00');
+      data.c.forEach(raw=>{ const c=Array.isArray(raw)?{d:raw[0],s:raw[1],e:raw[2],n:raw[3],g:raw[4]||[],b:raw[5]||[]}:raw; (Array.isArray(c.d)?c.d:[c.d]).forEach(day=>{classes.push({s:c.s,e:c.e,n:c.n,g:c.g||[],b:c.b||[],day});});});
     } else {
-      // 新紧凑格式: "weekStart|days;start;end;names;grades|..."
-      const parts = decoded.split('|');
-      weekStart = new Date(parts[0] + 'T00:00:00');
-      for (let i = 1; i < parts.length; i++) {
-        const seg = parts[i].split(';');
-        seg[0].split('.').map(Number).forEach(day => {
-          classes.push({
-            s: seg[1], e: seg[2],
-            n: seg[3] ? seg[3].split('、') : [],
-            g: seg[4] ? seg[4].split('.') : [],
-            day
-          });
-        });
-      }
+      const parts=decoded.split('|');
+      weekStart=new Date(parts[0]+'T00:00:00');
+      for (let i=1;i<parts.length;i++) { const seg=parts[i].split(';'); seg[0].split('.').map(Number).forEach(day=>{classes.push({s:seg[1],e:seg[2],n:seg[3]?seg[3].split('、'):[],g:seg[4]?seg[4].split('.'):[],day});}); }
     }
-
-    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
-    document.getElementById('shareWeekLabel').textContent =
-      weekStart.getFullYear() + '年 ' + fmtDate(weekStart) + ' - ' + fmtDate(weekEnd);
-
-    const byDay = {};
-    classes.forEach(c => {
-      if (!byDay[c.day]) byDay[c.day] = [];
-      byDay[c.day].push(c);
-    });
-
-    let html = '';
-    for (let i = 0; i < 7; i++) {
-      const dayClasses = (byDay[i] || []).sort((a,b) => a.s.localeCompare(b.s));
-      if (dayClasses.length === 0) continue;
-      html += '<div class="day-section"><div class="day-title">周' + weekDayName(i) + ' · ' + fmtDate(new Date(weekStart.getTime() + i*86400000)) + '</div>';
-      dayClasses.forEach(c => {
-        html += '<div class="class-card share-class-card"><div class="info"><div class="time">' + c.s + ' - ' + c.e + '</div><div class="detail">' + c.n.join('、') + '</div></div><div style="text-align:right">' + (c.g||[]).map(function(g){ return '<span class="tag tag-grade">'+g+'</span>'; }).join('') + (c.b||[]).map(function(b){ return '<span class="tag tag-subject">'+b+'</span>'; }).join('') + '</div></div>';
-      });
-      html += '</div>';
-    }
-
-    document.getElementById('shareClassList').innerHTML = html;
-    document.getElementById('shareEmpty').classList.toggle('hidden', html !== '');
-  } catch(e) {
-    document.getElementById('shareClassList').innerHTML = '<div class="empty"><div class="icon">⚠️</div><div>链接已失效，请联系重新分享</div></div>';
-    document.getElementById('shareEmpty').classList.add('hidden');
-  }
+    const weekEnd=new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+6);
+    document.getElementById('shareWeekLabel').textContent=weekStart.getFullYear()+'年 '+fmtDate(weekStart)+' - '+fmtDate(weekEnd);
+    const byDay={};
+    classes.forEach(c=>{if(!byDay[c.day])byDay[c.day]=[];byDay[c.day].push(c);});
+    let html='';
+    for(let i=0;i<7;i++){const dc=(byDay[i]||[]).sort((a,b)=>a.s.localeCompare(b.s)); if(dc.length===0)continue; html+='<div class="day-section"><div class="day-title">周'+weekDayName(i)+' · '+fmtDate(new Date(weekStart.getTime()+i*86400000))+'</div>'; dc.forEach(c=>{html+='<div class="class-card share-class-card"><div class="info"><div class="time">'+c.s+' - '+c.e+'</div><div class="detail">'+c.n.join('、')+'</div></div><div style="text-align:right">'+(c.g||[]).map(function(g){return'<span class="tag tag-grade">'+g+'</span>';}).join('')+(c.b||[]).map(function(b){return'<span class="tag tag-subject">'+b+'</span>';}).join('')+'</div></div>';}); html+='</div>';}
+    document.getElementById('shareClassList').innerHTML=html;
+    document.getElementById('shareEmpty').classList.toggle('hidden',html!=='');
+  }catch(e){ document.getElementById('shareClassList').innerHTML='<div class="empty"><div class="icon">⚠️</div><div>链接已失效，请联系重新分享</div></div>'; document.getElementById('shareEmpty').classList.add('hidden'); }
 }
 
 // ========== 截图 ==========
 function screenshotWeek() {
-  const weekStr = fmtLocalDate(currentWeekStart);
-  const allClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
-  if (allClasses.length === 0) { toast('本周没有课程'); return; }
+  const weekStr=fmtLocalDate(currentWeekStart);
+  const allClasses=DB.getClasses().filter(c=>c.weekStart===weekStr);
+  if (allClasses.length===0) { toast('本周没有课程'); return; }
+  const students=DB.getStudents();
+  const byDay={};
+  allClasses.forEach(c=>{ (c.dayIdxs||(c.dayIdx!==undefined?[c.dayIdx]:[])).forEach(d=>{ if(!byDay[d])byDay[d]=[]; byDay[d].push(c); }); });
+  const container=document.createElement('div');
+  container.style.cssText='position:fixed;left:-9999px;top:0;width:800px;background:#fff;padding:24px 28px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#1A1D2E;z-index:9999;';
+  const endDate=new Date(currentWeekStart); endDate.setDate(endDate.getDate()+6);
+  let html='<div style="text-align:center;padding:12px 0 18px;border-bottom:2px solid #388E3C;margin-bottom:14px"><h2 style="font-size:22px;margin:0 0 4px;color:#2E7D32">📅 张老师课表</h2><p style="font-size:14px;color:#6B7094;margin:0">'+currentWeekStart.getFullYear()+'年 '+fmtDate(currentWeekStart)+' - '+fmtDate(endDate)+'</p></div>';
+  for (let i=0;i<7;i++){ const dc=(byDay[i]||[]).sort((a,b)=>a.startTime.localeCompare(b.startTime)); if(dc.length===0)continue; const d=getDayDate(i); html+='<div style="margin-bottom:12px"><div style="font-size:14px;font-weight:700;color:#388E3C;margin-bottom:6px;padding:4px 10px;background:#EEF0FF;border-radius:6px">周'+weekDayName(i)+' · '+fmtDate(d)+' <span style="font-weight:400;color:#6B7094">'+dc.length+'节</span></div>'; dc.forEach(c=>{ const stus=(c.studentIds||[]).map(id=>students.find(s=>s.id===id)).filter(Boolean); const grades=[...new Set(stus.map(s=>s.grade).filter(Boolean))]; html+='<div style="display:flex;align-items:center;padding:9px 12px;border-left:4px solid #388E3C;margin-bottom:5px;background:#F8F9FC;border-radius:0 10px 10px 0"><span style="font-weight:700;font-size:14px;min-width:90px">'+c.startTime.slice(0,5)+'-'+c.endTime.slice(0,5)+'</span><span style="font-size:14px;flex:1">'+stus.map(s=>s.codeName).join('、')+'</span>'+grades.map(g=>'<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF0FF;color:#388E3C;margin-left:4px">'+g+'</span>').join('')+'</div>'; }); html+='</div>'; }
+  container.innerHTML=html; document.body.appendChild(container);
+  if (typeof html2canvas!=='undefined') { html2canvas(container,{scale:2,backgroundColor:'#ffffff'}).then(canvas=>{ document.body.removeChild(container); const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='schedule_'+weekStr+'.png'; a.click(); toast('✅ 截图已保存'); }).catch(()=>{ document.body.removeChild(container); toast('❌ 截图失败'); }); }
+  else { document.body.removeChild(container); toast('❌ 截图库加载中，请刷新后重试'); }
+}
 
-  const students = DB.getStudents();
+// ========== 同步设置 ==========
+function showExportModal() {
+  document.getElementById('ghToken').value = SYNC.getToken();
+  document.getElementById('exportModal').classList.remove('hidden');
+}
 
-  // 按天分组
-  const byDay = {};
-  allClasses.forEach(c => {
-    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-    days.forEach(d => {
-      if (!byDay[d]) byDay[d] = [];
-      byDay[d].push(c);
-    });
+function saveSyncConfig() {
+  const token = document.getElementById('ghToken').value.trim();
+  if (!token) {
+    SYNC.setToken('');
+    localStorage.removeItem('sync_version');
+    SYNC.updateDot('off');
+    document.getElementById('syncStatus').textContent = '⚙️ 未配置';
+    toast('已清除同步配置');
+    return;
+  }
+  if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+    toast('⚠️ Token 格式不对，应该以 ghp_ 或 github_pat_ 开头');
+    return;
+  }
+  SYNC.setToken(token);
+  toast('✅ Token 已保存，正在同步...');
+  closeModal('exportModal');
+  // 立即首次同步
+  SYNC.pushToCloud().then(ok => {
+    if (ok) toast('✅ 云端同步成功！');
+    else toast('❌ 同步失败，请检查 Token 权限');
   });
+}
 
-  // 渲染到屏幕外容器
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;background:#fff;padding:24px 28px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#1A1D2E;z-index:9999;';
-
-  const endDate = new Date(currentWeekStart); endDate.setDate(endDate.getDate() + 6);
-  const title = currentWeekStart.getFullYear() + '年 ' + fmtDate(currentWeekStart) + ' - ' + fmtDate(endDate);
-
-  let html = '<div style="text-align:center;padding:12px 0 18px;border-bottom:2px solid #388E3C;margin-bottom:14px">';
-  html += '<h2 style="font-size:22px;margin:0 0 4px;color:#2E7D32">📅 张老师课表</h2>';
-  html += '<p style="font-size:14px;color:#6B7094;margin:0">' + title + '</p></div>';
-
-  for (let i = 0; i < 7; i++) {
-    const dayClasses = (byDay[i] || []).sort((a, b) => a.startTime.localeCompare(b.startTime));
-    if (dayClasses.length === 0) continue;
-    const d = getDayDate(i);
-    html += '<div style="margin-bottom:12px">';
-    html += '<div style="font-size:14px;font-weight:700;color:#388E3C;margin-bottom:6px;padding:4px 10px;background:#EEF0FF;border-radius:6px">周' + weekDayName(i) + ' · ' + fmtDate(d) + '  <span style="font-weight:400;color:#6B7094">' + dayClasses.length + '节</span></div>';
-    dayClasses.forEach(c => {
-      const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-      const names = stus.map(s => s.codeName).join('、');
-      const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
-      html += '<div style="display:flex;align-items:center;padding:9px 12px;border-left:4px solid #388E3C;margin-bottom:5px;background:#F8F9FC;border-radius:0 10px 10px 0">';
-      html += '<span style="font-weight:700;font-size:14px;min-width:90px">' + c.startTime.slice(0,5) + '-' + c.endTime.slice(0,5) + '</span>';
-      html += '<span style="font-size:14px;flex:1">' + names + '</span>';
-      html += grades.map(g => '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF0FF;color:#388E3C;margin-left:4px">' + g + '</span>').join('');
-      html += '</div>';
-    });
-    html += '</div>';
-  }
-
-  container.innerHTML = html;
-  document.body.appendChild(container);
-
-  // 用 html2canvas 截图
-  if (typeof html2canvas !== 'undefined') {
-    html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
-      document.body.removeChild(container);
-      const a = document.createElement('a');
-      a.href = canvas.toDataURL('image/png');
-      a.download = 'schedule_' + weekStr + '.png';
-      a.click();
-      toast('✅ 截图已保存');
-    }).catch(() => {
-      document.body.removeChild(container);
-      toast('❌ 截图失败，请稍后重试');
-    });
-  } else {
-    document.body.removeChild(container);
-    toast('❌ 截图库加载中，请刷新后重试');
-  }
+async function manualSync() {
+  if (!SYNC.hasToken()) { toast('请先配置 Token'); document.getElementById('exportModal').classList.remove('hidden'); return; }
+  toast('🔄 同步中...');
+  const updated = await SYNC.syncFromCloud();
+  if (updated) { renderAll(); toast('✅ 同步完成'); }
+  else { toast('✅ 数据已是最新'); }
 }
 
 // ========== 备份 ==========
-function showExportModal() { document.getElementById('exportModal').classList.remove('hidden'); }
-
 function exportData() {
-  const blob = new Blob([JSON.stringify({ students: DB.getStudents(), classes: DB.getClasses() }, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'schedule_backup_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
+  const blob=new Blob([JSON.stringify({ students:DB.getStudents(), classes:DB.getClasses() },null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='schedule_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
   toast('✅ 备份文件已下载');
 }
 
 function importData(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (data.students) DB.setStudents(data.students);
-      if (data.classes) DB.setClasses(data.classes);
-      toast('✅ 数据导入成功');
-      renderAll();
-      closeModal('exportModal');
-    } catch(ex) { toast('❌ 文件格式错误'); }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){ try{ const data=JSON.parse(ev.target.result); if(data.students)DB.setStudents(data.students); if(data.classes)DB.setClasses(data.classes); toast('✅ 数据导入成功'); renderAll(); closeModal('exportModal'); }catch(ex){toast('❌ 文件格式错误');} };
+  reader.readAsText(file); e.target.value='';
 }
 
 // ========== 工具 ==========
-function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'toast'; el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.remove(); }, 2000);
-}
+function toast(msg) { const el=document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),2000); }
+function renderAll() { renderCalendar(); renderStudentList(); }
 
-function renderAll() {
-  renderCalendar();
-  renderStudentList();
-}
+// 关闭弹窗（点击背景）
+document.addEventListener('click',function(e){ if(e.target.classList.contains('modal-overlay')){ e.target.classList.add('hidden'); editingClassId=null; editingStudentId=null; selectedStudentIds=[]; selectedDayIdxs=[]; } });
 
-// ========== 关闭弹窗（点击背景） ==========
-document.addEventListener('click', function(e) {
-  if (e.target.classList.contains('modal-overlay')) {
-    e.target.classList.add('hidden');
-    editingClassId = null;
-    editingStudentId = null;
-    selectedStudentIds = [];
-    selectedDayIdxs = [];
-  }
-});
-
-// ========== 启动 ==========
 init();
 </script>
 </body>
