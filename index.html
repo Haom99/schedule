@@ -32,8 +32,13 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; cursor: pointer; border-radius: 10px; font-weight: 500; color: var(--text2); transition: .25s; }
 .tab.active { background: #fff; color: var(--primary); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
 
+/* 视图切换 */
+.view-toggle { display: flex; margin: 8px 12px 0; background: rgba(0,0,0,.04); border-radius: 10px; padding: 2px; gap: 2px; }
+.view-toggle .vt { flex: 1; text-align: center; padding: 7px; font-size: 12px; cursor: pointer; border-radius: 8px; font-weight: 500; color: var(--text2); transition: .2s; }
+.view-toggle .vt.active { background: #fff; color: var(--primary); font-weight: 600; box-shadow: 0 1px 6px rgba(0,0,0,.06); }
+
 /* 周导航 */
-.week-nav { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 12px 6px; }
+.week-nav { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px 2px; }
 .week-nav button { width: 36px; height: 36px; border: none; background: var(--card); border-radius: 50%; font-size: 18px; cursor: pointer; color: var(--text); box-shadow: var(--shadow); transition: .2s; display: flex; align-items: center; justify-content: center; }
 .week-nav button:active { background: #f0f0f5; transform: scale(.94); }
 .week-nav .week-label { font-size: 15px; font-weight: 700; min-width: 200px; text-align: center; letter-spacing: -.2px; }
@@ -63,6 +68,16 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 .class-card .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
 .tag-grade { background: #EEF0FF; color: var(--primary); }
+
+/* 周视图 */
+.week-day-header { font-size: 14px; font-weight: 700; color: var(--primary); padding: 8px 14px 6px; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+.week-day-header .wd-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+.week-day-header .wd-date { font-size: 12px; color: var(--text2); font-weight: 400; margin-left: auto; }
+.week-empty-day { padding: 4px 14px 2px; font-size: 12px; color: var(--text3); }
+
+/* 截图按钮 */
+.screenshot-bar { padding: 0 12px 8px; }
+.screenshot-bar .btn { width: 100%; }
 
 /* 空状态 */
 .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
@@ -125,7 +140,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 <!-- 管理端 -->
 <div id="adminView">
   <header>
-    <h1>📅 张老师课表</h1>
+    <h1>&#x1F4C5; 张老师课表</h1>
     <div style="display:flex;gap:6px">
       <button class="btn btn-outline btn-sm" onclick="showExportModal()">备份</button>
     </div>
@@ -139,18 +154,25 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   <!-- 课表视图 -->
   <div id="scheduleView">
     <div class="week-nav">
-      <button onclick="prevWeek()">‹</button>
+      <button onclick="prevWeek()">&#x2039;</button>
       <span class="week-label" id="weekLabel"></span>
-      <button onclick="nextWeek()">›</button>
+      <button onclick="nextWeek()">&#x203A;</button>
       <button class="btn btn-outline btn-sm" onclick="goToday()">今天</button>
     </div>
 
-    <div class="day-tabs" id="dayTabs"></div>
+    <!-- 日/周视图切换 -->
+    <div class="view-toggle" id="viewToggle">
+      <div class="vt active" onclick="setViewMode('day')">日视图</div>
+      <div class="vt" onclick="setViewMode('week')">周视图</div>
+    </div>
+
+    <div class="day-strip" id="dayTabs"></div>
 
     <div class="class-list" id="classList"></div>
 
     <div id="shareBar" class="action-bar hidden">
-      <button class="btn btn-primary btn-block" onclick="generateShareLink()">📤 生成分享链接（脱敏）</button>
+      <button class="btn btn-primary" style="flex:2" onclick="generateShareLink()">&#x1F4E4; 分享链接</button>
+      <button class="btn btn-outline" style="flex:1" onclick="screenshotWeek()">&#x1F4F8; 截图</button>
     </div>
   </div>
 
@@ -161,7 +183,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
     </div>
     <div class="student-list" id="studentList"></div>
     <div class="empty" id="studentEmpty">
-      <div class="icon">📋</div>
+      <div class="icon">&#x1F4CB;</div>
       <div>还没有添加学生</div>
     </div>
   </div>
@@ -172,12 +194,12 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
 <!-- 分享视图（学管看到的） -->
 <div id="shareView" class="hidden">
   <div class="share-header">
-    <h2>📅 课程安排</h2>
+    <h2>&#x1F4C5; 课程安排</h2>
     <p id="shareWeekLabel"></p>
   </div>
   <div class="class-list" id="shareClassList"></div>
   <div class="empty" id="shareEmpty">
-    <div class="icon">📭</div>
+    <div class="icon">&#x1F4ED;</div>
     <div>本周暂无课程</div>
   </div>
 </div>
@@ -244,8 +266,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   <div class="modal">
     <h3>数据备份</h3>
     <div class="form-actions" style="flex-direction:column">
-      <button class="btn btn-primary btn-block" onclick="exportData()">📥 导出数据文件</button>
-      <button class="btn btn-outline btn-block" onclick="document.getElementById('importFile').click()">📤 导入数据文件</button>
+      <button class="btn btn-primary btn-block" onclick="exportData()">&#x1F4E5; 导出数据文件</button>
+      <button class="btn btn-outline btn-block" onclick="document.getElementById('importFile').click()">&#x1F4E4; 导入数据文件</button>
       <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
       <button class="btn btn-outline btn-block" onclick="closeModal('exportModal')">关闭</button>
     </div>
@@ -253,6 +275,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
   </div>
 </div>
 
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
 // ========== 数据层 ==========
 const DB = {
@@ -265,6 +288,7 @@ const DB = {
 
 let currentWeekStart = getMonday(new Date());
 let selectedDayIdx = 0; // 0=Mon, 6=Sun
+let viewMode = 'day'; // 'day' | 'week'
 let editingClassId = null;
 let editingStudentId = null;
 let selectedStudentIds = [];
@@ -305,6 +329,17 @@ function switchTab(tab) {
   if (tab === 'students') renderStudentList();
 }
 
+// ========== 日/周视图切换 ==========
+function setViewMode(mode) {
+  viewMode = mode;
+  document.querySelectorAll('.view-toggle .vt').forEach((el, i) => {
+    el.classList.toggle('active', (mode === 'day' && i === 0) || (mode === 'week' && i === 1));
+  });
+  // 日视图显示天标签条，周视图隐藏
+  document.getElementById('dayTabs').classList.toggle('hidden', mode === 'week');
+  renderCalendar();
+}
+
 // ========== 周导航 ==========
 function prevWeek() { currentWeekStart.setDate(currentWeekStart.getDate() - 7); renderCalendar(); }
 function nextWeek() { currentWeekStart.setDate(currentWeekStart.getDate() + 7); renderCalendar(); }
@@ -318,7 +353,6 @@ function renderCalendar() {
   document.getElementById('weekLabel').textContent =
     `${currentWeekStart.getFullYear()}年 ${fmtDate(currentWeekStart)} - ${fmtDate(endDate)}`;
 
-  // 天标签 - 卡片式
   const today = new Date();
   today.setHours(0,0,0,0);
   const weekStr = fmtLocalDate(currentWeekStart);
@@ -329,6 +363,7 @@ function renderCalendar() {
     days.forEach(d => daysWithClass.add(d));
   });
 
+  // 天标签条（日视图显示）
   let dayTabsHTML = '';
   for (let i = 0; i < 7; i++) {
     const d = getDayDate(i);
@@ -344,50 +379,80 @@ function renderCalendar() {
   }
   document.getElementById('dayTabs').innerHTML = dayTabsHTML;
 
-  // 当前天的课程（兼容dayIdx旧格式和dayIdxs新格式）
-  const allClasses = DB.getClasses().filter(c => {
-    if (c.weekStart !== weekStr) return false;
-    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-    return days.includes(selectedDayIdx);
-  });
-  allClasses.sort((a,b) => a.startTime.localeCompare(b.startTime));
-
   const students = DB.getStudents();
-  let html = '';
-  if (allClasses.length === 0) {
-    const total = DB.getClasses().length;
-    const weekClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
-    html = '<div class="empty"><div class="icon">📭</div><div>这天没课</div>';
-    html += '<div style="font-size:12px;color:#999;margin-top:8px">总课程：'+total+'条 | 本周('+weekStr+')共：'+weekClasses.length+'条 | 当前天('+selectedDayIdx+'/'+weekDayName(selectedDayIdx)+')</div>';
-    if (weekClasses.length > 0) {
-      html += '<div style="font-size:12px;color:#f90;margin-top:4px">⚠ 本周有课但不在当天，请切换天标签</div>';
-    }
-    if (total > 0 && weekClasses.length === 0) {
-      html += '<div style="font-size:12px;color:#f90;margin-top:4px">⚠ 有课程但不在本周，请切换周</div>';
-    }
-    html += '</div>';
-  } else {
-    allClasses.forEach(c => {
-      const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-      const names = stus.map(s => s.codeName).join('、');
-      const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
-      html += `<div class="class-card" onclick="editClass('${c.id}')">
-        <div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div>
-        <div class="card-info">
-          <div class="card-names">${names || '未指定'}</div>
-          <div class="card-tags">
-            ${grades.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
-          </div>
-        </div>
+
+  if (viewMode === 'week') {
+    // ---- 周视图：所有天纵向排列 ----
+    let html = '';
+    let totalClasses = 0;
+    for (let i = 0; i < 7; i++) {
+      const dayClasses = allWeekClasses.filter(c => {
+        const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
+        return days.includes(i);
+      }).sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      const d = getDayDate(i);
+      const isToday = d.getTime() === today.getTime();
+      html += `<div class="week-day-header">
+        <span class="wd-dot"></span>周${weekDayName(i)} · ${fmtDate(d)}${isToday ? ' 今天' : ''}
+        <span class="wd-date">${dayClasses.length}节</span>
       </div>`;
-    });
+
+      if (dayClasses.length === 0) {
+        html += '<div class="week-empty-day">这天没课</div>';
+      } else {
+        dayClasses.forEach(c => {
+          const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
+          const names = stus.map(s => s.codeName).join('、');
+          const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
+          html += `<div class="class-card" onclick="editClass('${c.id}')">
+            <div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div>
+            <div class="card-info">
+              <div class="card-names">${names || '未指定'}</div>
+              <div class="card-tags">
+                ${grades.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
+              </div>
+            </div>
+          </div>`;
+        });
+        totalClasses += dayClasses.length;
+      }
+    }
+    if (totalClasses === 0) {
+      html += '<div class="empty"><div class="icon">📭</div><div>本周还没排课</div></div>';
+    }
+    document.getElementById('classList').innerHTML = html;
+  } else {
+    // ---- 日视图：只显示选中天的课程 ----
+    const dayClasses = allWeekClasses.filter(c => {
+      const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
+      return days.includes(selectedDayIdx);
+    }).sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    let html = '';
+    if (dayClasses.length === 0) {
+      html = '<div class="empty"><div class="icon">📭</div><div>这天没课</div></div>';
+    } else {
+      dayClasses.forEach(c => {
+        const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
+        const names = stus.map(s => s.codeName).join('、');
+        const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
+        html += `<div class="class-card" onclick="editClass('${c.id}')">
+          <div class="card-time">${c.startTime.slice(0,5)}<br>${c.endTime.slice(0,5)}</div>
+          <div class="card-info">
+            <div class="card-names">${names || '未指定'}</div>
+            <div class="card-tags">
+              ${grades.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
+            </div>
+          </div>
+        </div>`;
+      });
+    }
+    document.getElementById('classList').innerHTML = html;
   }
-  document.getElementById('classList').innerHTML = html;
 
   // 分享按钮
-  const hasClasses = DB.getClasses().some(c => {
-    return c.weekStart === fmtLocalDate(currentWeekStart);
-  });
+  const hasClasses = allWeekClasses.length > 0;
   document.getElementById('shareBar').classList.toggle('hidden', !hasClasses);
 }
 
@@ -585,7 +650,9 @@ function deleteStudent() {
   renderStudentList();
 }
 
-// ========== 分享 ==========
+// ========== 分享（紧凑编码） ==========
+// 编码格式: "weekStart|clz1|clz2|..."  每课: "days;start;end;names;grades"
+// days 用 . 连, names 用 、 连, grades 用 . 连
 function generateShareLink() {
   const students = DB.getStudents();
   const weekClasses = DB.getClasses().filter(c => {
@@ -594,34 +661,20 @@ function generateShareLink() {
 
   if (weekClasses.length === 0) { toast('本周没有课程可分享'); return; }
 
-  // 构建脱敏数据，数组格式省空间：[[dayIdxs], start, end, [names], [grades], [subjects]]
-  const shareData = weekClasses.map(c => {
+  const lines = [fmtLocalDate(currentWeekStart)];
+  weekClasses.forEach(c => {
     const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
-    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
-    return [
-      days,
-      c.startTime.slice(0,5),
-      c.endTime.slice(0,5),
-      stus.map(s => s.codeName),
-      [...new Set(stus.map(s => s.grade).filter(Boolean))],
-      [...new Set(stus.map(s => s.subject).filter(Boolean))],
-    ];
+    const days = (c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : [])).sort().join('.');
+    const names = stus.map(s => s.codeName).join('、');
+    const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))].join('.');
+    lines.push([days, c.startTime.slice(0,5), c.endTime.slice(0,5), names, grades].join(';'));
   });
-
-  const payload = {
-    w: fmtLocalDate(currentWeekStart),
-    c: shareData
-  };
-
-  // 编码
-  const encoded = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(payload))));
+  const raw = lines.join('|');
+  const encoded = btoa(String.fromCharCode(...new TextEncoder().encode(raw)));
   const link = location.origin + location.pathname + '#' + encoded;
-
-  // 复制到剪贴板
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => toast('✅ 分享链接已复制！学管看不到学生真实信息'));
+    navigator.clipboard.writeText(link).then(() => toast('✅ 分享链接已复制！'));
   } else {
-    // 降级方案
     const ta = document.createElement('textarea');
     ta.value = link; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
@@ -631,51 +684,59 @@ function generateShareLink() {
 }
 
 // ========== 分享视图（学管端） ==========
+// 兼容旧 JSON 格式和新紧凑格式
 function showShareView(hash) {
   document.getElementById('adminView').classList.add('hidden');
   document.getElementById('shareView').classList.remove('hidden');
 
   try {
-    const json = new TextDecoder().decode(Uint8Array.from(atob(hash).split('').map(c => c.charCodeAt(0))));
-    const data = JSON.parse(json);
-    const weekStart = new Date(data.w + 'T00:00:00');
-    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
-    document.getElementById('shareWeekLabel').textContent =
-      `${weekStart.getFullYear()}年 ${fmtDate(weekStart)} - ${fmtDate(weekEnd)}`;
+    const decoded = new TextDecoder().decode(Uint8Array.from(atob(hash).split('').map(c => c.charCodeAt(0))));
+    let weekStart, classes = [];
 
-    // 兼容新旧格式：新格式数组 [days[], s, e, n, g, b]，旧格式对象 {d, s, e, n, g, b}
-    function norm(c) {
-      if (Array.isArray(c)) return { d:c[0], s:c[1], e:c[2], n:c[3], g:c[4]||[], b:c[5]||[] };
-      return { d: c.d, s: c.s, e: c.e, n: c.n, g: c.g||[], b: c.b||[] };
+    if (decoded.startsWith('{')) {
+      // 旧 JSON 格式: {"w":"...","c":[[...],...]}
+      const data = JSON.parse(decoded);
+      weekStart = new Date(data.w + 'T00:00:00');
+      data.c.forEach(raw => {
+        const c = Array.isArray(raw) ? { d:raw[0], s:raw[1], e:raw[2], n:raw[3], g:raw[4]||[], b:raw[5]||[] } : raw;
+        (Array.isArray(c.d) ? c.d : [c.d]).forEach(day => {
+          classes.push({ s:c.s, e:c.e, n:c.n, g:c.g||[], b:c.b||[], day });
+        });
+      });
+    } else {
+      // 新紧凑格式: "weekStart|days;start;end;names;grades|..."
+      const parts = decoded.split('|');
+      weekStart = new Date(parts[0] + 'T00:00:00');
+      for (let i = 1; i < parts.length; i++) {
+        const seg = parts[i].split(';');
+        seg[0].split('.').map(Number).forEach(day => {
+          classes.push({
+            s: seg[1], e: seg[2],
+            n: seg[3] ? seg[3].split('、') : [],
+            g: seg[4] ? seg[4].split('.') : [],
+            day
+          });
+        });
+      }
     }
 
-    // 按天分组（支持单日和多日）
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+    document.getElementById('shareWeekLabel').textContent =
+      weekStart.getFullYear() + '年 ' + fmtDate(weekStart) + ' - ' + fmtDate(weekEnd);
+
     const byDay = {};
-    data.c.forEach(c => {
-      const x = norm(c);
-      const days = Array.isArray(x.d) ? x.d : [x.d];
-      days.forEach(day => {
-        if (!byDay[day]) byDay[day] = [];
-        byDay[day].push(x);
-      });
+    classes.forEach(c => {
+      if (!byDay[c.day]) byDay[c.day] = [];
+      byDay[c.day].push(c);
     });
 
     let html = '';
     for (let i = 0; i < 7; i++) {
       const dayClasses = (byDay[i] || []).sort((a,b) => a.s.localeCompare(b.s));
       if (dayClasses.length === 0) continue;
-      html += `<div class="day-section"><div class="day-title">周${weekDayName(i)} · ${fmtDate(new Date(weekStart.getTime() + i*86400000))}</div>`;
+      html += '<div class="day-section"><div class="day-title">周' + weekDayName(i) + ' · ' + fmtDate(new Date(weekStart.getTime() + i*86400000)) + '</div>';
       dayClasses.forEach(c => {
-        html += `<div class="class-card share-class-card">
-          <div class="info">
-            <div class="time">${c.s} - ${c.e}</div>
-            <div class="detail">${c.n.join('、')}</div>
-          </div>
-          <div style="text-align:right">
-            ${c.g.map(g => `<span class="tag tag-grade">${g}</span>`).join('')}
-            ${c.b.map(b => `<span class="tag tag-subject">${b}</span>`).join('')}
-          </div>
-        </div>`;
+        html += '<div class="class-card share-class-card"><div class="info"><div class="time">' + c.s + ' - ' + c.e + '</div><div class="detail">' + c.n.join('、') + '</div></div><div style="text-align:right">' + (c.g||[]).map(function(g){ return '<span class="tag tag-grade">'+g+'</span>'; }).join('') + (c.b||[]).map(function(b){ return '<span class="tag tag-subject">'+b+'</span>'; }).join('') + '</div></div>';
       });
       html += '</div>';
     }
@@ -685,6 +746,76 @@ function showShareView(hash) {
   } catch(e) {
     document.getElementById('shareClassList').innerHTML = '<div class="empty"><div class="icon">⚠️</div><div>链接已失效，请联系重新分享</div></div>';
     document.getElementById('shareEmpty').classList.add('hidden');
+  }
+}
+
+// ========== 截图 ==========
+function screenshotWeek() {
+  const weekStr = fmtLocalDate(currentWeekStart);
+  const allClasses = DB.getClasses().filter(c => c.weekStart === weekStr);
+  if (allClasses.length === 0) { toast('本周没有课程'); return; }
+
+  const students = DB.getStudents();
+
+  // 按天分组
+  const byDay = {};
+  allClasses.forEach(c => {
+    const days = c.dayIdxs || (c.dayIdx !== undefined ? [c.dayIdx] : []);
+    days.forEach(d => {
+      if (!byDay[d]) byDay[d] = [];
+      byDay[d].push(c);
+    });
+  });
+
+  // 渲染到屏幕外容器
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;background:#fff;padding:24px 28px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#1A1D2E;z-index:9999;';
+
+  const endDate = new Date(currentWeekStart); endDate.setDate(endDate.getDate() + 6);
+  const title = currentWeekStart.getFullYear() + '年 ' + fmtDate(currentWeekStart) + ' - ' + fmtDate(endDate);
+
+  let html = '<div style="text-align:center;padding:12px 0 18px;border-bottom:2px solid #388E3C;margin-bottom:14px">';
+  html += '<h2 style="font-size:22px;margin:0 0 4px;color:#2E7D32">📅 张老师课表</h2>';
+  html += '<p style="font-size:14px;color:#6B7094;margin:0">' + title + '</p></div>';
+
+  for (let i = 0; i < 7; i++) {
+    const dayClasses = (byDay[i] || []).sort((a, b) => a.startTime.localeCompare(b.startTime));
+    if (dayClasses.length === 0) continue;
+    const d = getDayDate(i);
+    html += '<div style="margin-bottom:12px">';
+    html += '<div style="font-size:14px;font-weight:700;color:#388E3C;margin-bottom:6px;padding:4px 10px;background:#EEF0FF;border-radius:6px">周' + weekDayName(i) + ' · ' + fmtDate(d) + '  <span style="font-weight:400;color:#6B7094">' + dayClasses.length + '节</span></div>';
+    dayClasses.forEach(c => {
+      const stus = (c.studentIds || []).map(id => students.find(s => s.id === id)).filter(Boolean);
+      const names = stus.map(s => s.codeName).join('、');
+      const grades = [...new Set(stus.map(s => s.grade).filter(Boolean))];
+      html += '<div style="display:flex;align-items:center;padding:9px 12px;border-left:4px solid #388E3C;margin-bottom:5px;background:#F8F9FC;border-radius:0 10px 10px 0">';
+      html += '<span style="font-weight:700;font-size:14px;min-width:90px">' + c.startTime.slice(0,5) + '-' + c.endTime.slice(0,5) + '</span>';
+      html += '<span style="font-size:14px;flex:1">' + names + '</span>';
+      html += grades.map(g => '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF0FF;color:#388E3C;margin-left:4px">' + g + '</span>').join('');
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+  document.body.appendChild(container);
+
+  // 用 html2canvas 截图
+  if (typeof html2canvas !== 'undefined') {
+    html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+      document.body.removeChild(container);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'schedule_' + weekStr + '.png';
+      a.click();
+      toast('✅ 截图已保存');
+    }).catch(() => {
+      document.body.removeChild(container);
+      toast('❌ 截图失败，请稍后重试');
+    });
+  } else {
+    document.body.removeChild(container);
+    toast('❌ 截图库加载中，请刷新后重试');
   }
 }
 
