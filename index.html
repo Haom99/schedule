@@ -316,11 +316,11 @@ const SYNC = {
   setToken(t) { localStorage.sync_token = t; },
   hasToken() { return !!this.getToken(); },
 
-  // 读远程数据（无需 token，公开仓库可直读）
+  // 读远程数据
   async pull() {
     const url = `https://raw.githubusercontent.com/${this.REPO}/${this.BRANCH}/${this.FILE}`;
     const resp = await fetch(url, { cache: 'no-store' });
-    if (!resp.ok) throw new Error('远程数据不存在或网络错误');
+    if (resp.status === 404) return null; if (!resp.ok) throw new Error("网络错误: " + resp.status);
     return await resp.json();
   },
 
@@ -338,12 +338,7 @@ const SYNC = {
     } catch(e) {}
 
     const content = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(data))));
-    const body = JSON.stringify({
-      message: 'sync: ' + new Date().toLocaleString('zh-CN'),
-      content: content,
-      branch: this.BRANCH
-    });
-    if (sha) body.sha = sha; // 更新已有文件需要 sha
+    const payload = { message: "sync: " + new Date().toLocaleString("zh-CN"), content, branch: this.BRANCH }; if (sha) payload.sha = sha
 
     const resp = await fetch(apiUrl, {
       method: 'PUT',
@@ -351,8 +346,7 @@ const SYNC = {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
       },
-      body: sha ? JSON.stringify({ message: 'sync: ' + new Date().toLocaleString('zh-CN'), content, sha, branch: this.BRANCH }) :
-                  JSON.stringify({ message: 'sync: ' + new Date().toLocaleString('zh-CN'), content, branch: this.BRANCH })
+      body: JSON.stringify(payload)
     });
 
     if (!resp.ok) {
@@ -391,7 +385,7 @@ const SYNC = {
     }
     try {
       const remote = await this.pull();
-      if (!remote || !remote._version) throw new Error('数据格式不对');
+      if (!remote || !remote._version) { if (remote === null) { this.updateDot("ok"); return false; } throw new Error("数据格式不对"); }
 
       const local = { students: DB.getStudents(), classes: DB.getClasses() };
       const localVer = parseInt(localStorage.sync_version || '0');
@@ -480,8 +474,7 @@ async function init() {
     showAdminView();
     // 异步拉云端数据
     if (SYNC.hasToken()) {
-      const updated = await SYNC.syncFromCloud();
-      if (updated) {
+      const updated = await SYNC.syncFromCloud(); if (updated) {
         renderAll();
         toast('✅ 已同步最新数据');
       }
