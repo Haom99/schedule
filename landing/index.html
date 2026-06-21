@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="张老师｜包头一线初高中英语教师，专注中考高考英语提分。试听预约中。">
+<title>张老师 · 初高中英语</title>
+<style>
+  :root {
+    --warm-white: #FFFBF5;
+    --cream: #FFF5E6;
+    --ink: #2D2D2D;
+    --warm-red: #C84B31;
+    --soft-gold: #D4A574;
+    --card-bg: #FFFFFF;
+    --border: #E8E0D5;
+    --text-secondary: #6B5E53;
+    --green-tag: #2D6A4F;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ─── Nav ─── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,251,245,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+  }
+  .nav .container {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: 0.5px; }
+  .nav-cta {
+    background: var(--warm-red); color: #fff; border: none;
+    padding: 8px 18px; border-radius: 20px; font-size: 14px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .nav-cta:hover { background: #A83A25; transform: translateY(-1px); }
+
+  /* ─── Hero ─── */
+  .hero {
+    padding: 100px 0 50px;
+    text-align: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--cream);
+    color: var(--warm-red);
+    padding: 6px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 .accent { color: var(--warm-red); }
+  .hero-sub {
+    font-size: 16px; color: var(--text-secondary); margin-bottom: 32px;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 40px; margin-bottom: 36px;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-size: 28px; font-weight: 800; color: var(--warm-red); }
+  .hero-stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .hero-btn {
+    display: inline-block;
+    background: var(--warm-red); color: #fff;
+    padding: 14px 40px; border-radius: 28px;
+    font-size: 16px; font-weight: 700; text-decoration: none;
+    box-shadow: 0 4px 20px rgba(200,75,49,0.3);
+    transition: all 0.2s;
+  }
+  .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(200,75,49,0.4); }
+  .hero-note { font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
+
+  /* ─── Section ─── */
+  section { padding: 50px 0; }
+  .section-title {
+    font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 32px;
+  }
+
+  /* ─── Cards ─── */
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid.three { grid-template-columns: 1fr; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+    box-shadow: var(--shadow-sm); transition: transform 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── Testimonial ─── */
+  .testimonial {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .testimonial-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .testimonial-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--cream); display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .testimonial-name { font-size: 14px; font-weight: 700; }
+  .testimonial-tag { font-size: 12px; color: var(--text-secondary); }
+  .testimonial-result {
+    display: inline-block; background: #E8F5E9; color: var(--green-tag);
+    padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 700;
+    margin-left: auto;
+  }
+  .testimonial p { font-size: 14px; color: var(--ink); line-height: 1.7; }
+
+  /* ─── CTA Section ─── */
+  .cta-section {
+    background: var(--ink); color: #fff; text-align: center;
+    border-radius: 20px; padding: 40px 24px; margin: 50px 20px;
+  }
+  .cta-section .section-title { color: #fff; }
+  .cta-section .section-sub { color: rgba(255,255,255,0.7); }
+  .cta-btn {
+    display: inline-block; background: #fff; color: var(--warm-red);
+    padding: 14px 40px; border-radius: 28px;
+    font-size: 16px; font-weight: 700; text-decoration: none;
+    margin-top: 20px; transition: all 0.2s;
+  }
+  .cta-btn:hover { transform: translateY(-2px); }
+  .cta-note { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 10px; }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center; padding: 32px 20px;
+    font-size: 13px; color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── Responsive ─── */
+  @media (min-width: 480px) {
+    .card-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 26px; }
+    .hero-stats { gap: 24px; }
+    .card-grid.three { grid-template-columns: 1fr; }
+  }
+
+  /* ─── Smooth scroll ─── */
+  html { scroll-behavior: smooth; }
+
+  /* ─── WeChat copy modal ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 20px; padding: 32px 28px;
+    text-align: center; max-width: 320px; width: 90%;
+  }
+  .modal h3 { font-size: 18px; margin-bottom: 8px; }
+  .modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+  .modal-wechat {
+    display: inline-block; background: var(--cream);
+    padding: 12px 28px; border-radius: 12px;
+    font-size: 18px; font-weight: 700; letter-spacing: 2px;
+    cursor: pointer; user-select: all; margin-bottom: 4px;
+  }
+  .modal-hint { font-size: 12px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="container">
+    <span class="nav-logo">张老师英语</span>
+    <button class="nav-cta" onclick="openModal()">约试听</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <span class="hero-tag">📚 初高中英语</span>
+    <h1>包头一线英语老师<br>专注<span class="accent">中考·高考</span>提分</h1>
+    <p class="hero-sub">不包装、不忽悠，用成绩说话</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">10年+</div>
+        <div class="hero-stat-label">一线教学经验</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">200+</div>
+        <div class="hero-stat-label">累计带教学生</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">95%</div>
+        <div class="hero-stat-label">提分率</div>
+      </div>
+    </div>
+    <a href="#contact" class="hero-btn">预约免费试听</a>
+    <p class="hero-note">试听不满意不收费 · 名额有限</p>
+  </div>
+</header>
+
+<!-- Three Features -->
+<section>
+  <div class="container">
+    <h2 class="section-title">为什么家长选我</h2>
+    <p class="section-sub">不是大机构，但比大机构更负责</p>
+    <div class="card-grid three">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>只教英语一科</h3>
+        <p>不像机构什么科目都做。我只钻研英语，所有精力放在一个方向上，对中高考考点烂熟于心。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>一人盯全程</h3>
+        <p>从试听到中/高考，每个学生都是我亲自带。不存在「好老师试听，实习生上课」的情况。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>每次课有反馈</h3>
+        <p>每次课后都会跟家长沟通孩子的情况——不是模板群发，是真正了解你孩子的学习状态。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results -->
+<section style="background: var(--cream);">
+  <div class="container">
+    <h2 class="section-title">学生真实提分案例</h2>
+    <p class="section-sub">每个数据背后都是一个家庭</p>
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <div class="testimonial-avatar">👨‍🎓</div>
+        <div>
+          <div class="testimonial-name">刘同学 · 高三</div>
+          <div class="testimonial-tag">北重五中</div>
+        </div>
+        <span class="testimonial-result">44→98</span>
+      </div>
+      <p>"高三开学摸底44分，孩子对英语完全没信心。张老师从最基础的语法框架帮他重新搭建，一步一个脚印，不赶进度、不跳步骤。高考英语98分，家长说这是三年来最大的惊喜。"</p>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <div class="testimonial-avatar">👦</div>
+        <div>
+          <div class="testimonial-name">李同学 · 高二</div>
+          <div class="testimonial-tag">包钢一中</div>
+        </div>
+        <span class="testimonial-result">105→128</span>
+      </div>
+      <p>"孩子底子不差但分数一直上不去，张老师一针见血指出是完形填空和写作拖后腿。针对性练了三个月，期末从105提到128，班级排名进了前十。"</p>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial-header">
+        <div class="testimonial-avatar">👩</div>
+        <div>
+          <div class="testimonial-name">王同学 · 初三</div>
+          <div class="testimonial-tag">包钢三中</div>
+        </div>
+        <span class="testimonial-result">88→110+</span>
+      </div>
+      <p>"初三上学期才开始补，时间很紧。张老师帮孩子理出高频考点，每次课后布置精准练习，半年从88提到110+。如果能早一年开始会更好，但还是考上了理想的高中。"</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="container">
+  <div class="cta-section" id="contact">
+    <h2 class="section-title">想试听一节课看看？</h2>
+    <p class="section-sub">试听课免费，课后我会跟您沟通孩子的情况和学习建议——即使最后不报名也没关系</p>
+    <a href="javascript:openModal()" class="cta-btn">📱 加微信预约试听</a>
+    <p class="cta-note">限包头地区 · 初高中英语</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>张老师英语 · 包头初高中英语一对一辅导</p>
+</footer>
+
+<!-- WeChat Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>张老师的微信</h3>
+    <p>长按复制微信号，添加时备注「试听」</p>
+    <div class="modal-wechat" id="wechatId" onclick="copyWechat()">GoldenLife-4everS</div>
+    <p class="modal-hint">👆 点击复制微信号</p>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal').classList.add('show');
+  }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+  function copyWechat() {
+    const el = document.getElementById('wechatId');
+    navigator.clipboard.writeText(el.textContent).then(() => {
+      el.textContent = '已复制！去微信粘贴';
+      setTimeout(() => { el.textContent = 'GoldenLife-4everS'; }, 2000);
+    }).catch(() => {
+      // Fallback
+      const range = document.createRange();
+      range.selectNode(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    });
+  }
+</script>
+</body>
+</html>
