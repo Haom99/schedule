@@ -4,216 +4,400 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="张老师｜包头一线初高中英语教师，专注中考高考英语提分。试听预约中。">
-<title>张老师 · 初高中英语</title>
+<title>张老师 · 初高中英语提分</title>
+
+<!-- Google Fonts fallback: system fonts for Chinese -->
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
   :root {
-    --warm-white: #FFFBF5;
-    --cream: #FFF5E6;
-    --ink: #2D2D2D;
-    --warm-red: #C84B31;
-    --soft-gold: #D4A574;
-    --card-bg: #FFFFFF;
-    --border: #E8E0D5;
-    --text-secondary: #6B5E53;
-    --green-tag: #2D6A4F;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+    --navy: #0B1E3D;
+    --navy-light: #152D54;
+    --gold: #F0A500;
+    --gold-light: #FFF3D6;
+    --green: #059669;
+    --green-light: #ECFDF5;
+    --red: #DC2626;
+    --white: #FFFFFF;
+    --off-white: #F8F9FB;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05);
+    --shadow-xl: 0 20px 50px rgba(0,0,0,0.12);
+    --radius-sm: 8px;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html { scroll-behavior: smooth; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: var(--warm-white);
-    color: var(--ink);
-    line-height: 1.7;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--off-white);
+    color: var(--gray-900);
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   .container {
-    max-width: 640px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
   }
 
-  /* ─── Nav ─── */
+  /* ===== NAV ===== */
   .nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(255,251,245,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 14px 0;
   }
-  .nav .container {
-    display: flex; justify-content: space-between; align-items: center;
+  .nav .container { display: flex; justify-content: space-between; align-items: center; }
+  .nav-logo {
+    font-size: 18px; font-weight: 800; color: var(--navy); letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 8px;
   }
-  .nav-logo { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: 0.5px; }
-  .nav-cta {
-    background: var(--warm-red); color: #fff; border: none;
-    padding: 8px 18px; border-radius: 20px; font-size: 14px;
-    font-weight: 600; cursor: pointer; transition: all 0.2s;
-  }
-  .nav-cta:hover { background: #A83A25; transform: translateY(-1px); }
-
-  /* ─── Hero ─── */
-  .hero {
-    padding: 100px 0 50px;
-    text-align: center;
-  }
-  .hero-tag {
+  .nav-logo-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--gold);
     display: inline-block;
-    background: var(--cream);
-    color: var(--warm-red);
-    padding: 6px 16px; border-radius: 20px;
+  }
+  .nav-cta {
+    background: var(--gold); color: var(--navy); border: none;
+    padding: 10px 22px; border-radius: 24px; font-size: 14px;
+    font-weight: 700; cursor: pointer; transition: all 0.25s;
+    letter-spacing: -0.2px;
+  }
+  .nav-cta:hover { background: #E09600; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 80px;
+    background: linear-gradient(170deg, var(--navy) 0%, #0F2A52 50%, #132E5C 100%);
+    color: #fff; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -150px; left: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(5,150,105,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero .container { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--gold);
+    padding: 8px 20px; border-radius: 24px;
     font-size: 13px; font-weight: 600; letter-spacing: 1px;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
+    text-transform: uppercase;
   }
   .hero h1 {
-    font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 12px;
-    letter-spacing: 0.5px;
+    font-size: clamp(28px, 5vw, 42px); font-weight: 900;
+    line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px;
   }
-  .hero h1 .accent { color: var(--warm-red); }
+  .hero h1 .highlight {
+    background: linear-gradient(180deg, transparent 60%, rgba(240,165,0,0.3) 60%);
+    padding: 0 4px;
+  }
   .hero-sub {
-    font-size: 16px; color: var(--text-secondary); margin-bottom: 32px;
+    font-size: 17px; color: rgba(255,255,255,0.7); margin-bottom: 40px;
+    line-height: 1.6;
   }
   .hero-stats {
-    display: flex; justify-content: center; gap: 40px; margin-bottom: 36px;
+    display: flex; justify-content: center; gap: 12px; margin-bottom: 40px;
+    flex-wrap: wrap;
   }
-  .hero-stat { text-align: center; }
-  .hero-stat-num { font-size: 28px; font-weight: 800; color: var(--warm-red); }
-  .hero-stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .hero-stat {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-lg); padding: 20px 28px;
+    min-width: 130px; text-align: center;
+    backdrop-filter: blur(5px);
+  }
+  .hero-stat-num { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+  .hero-stat-label { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 4px; }
   .hero-btn {
-    display: inline-block;
-    background: var(--warm-red); color: #fff;
-    padding: 14px 40px; border-radius: 28px;
-    font-size: 16px; font-weight: 700; text-decoration: none;
-    box-shadow: 0 4px 20px rgba(200,75,49,0.3);
-    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold); color: var(--navy);
+    padding: 17px 42px; border-radius: 30px;
+    font-size: 17px; font-weight: 700; text-decoration: none;
+    box-shadow: 0 8px 32px rgba(240,165,0,0.35);
+    transition: all 0.3s; cursor: pointer; border: none;
+    letter-spacing: -0.3px;
   }
-  .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(200,75,49,0.4); }
-  .hero-note { font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
+  .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240,165,0,0.5); }
+  .hero-note { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 14px; }
 
-  /* ─── Section ─── */
-  section { padding: 50px 0; }
+  /* ===== SCROLL INDICATOR ===== */
+  .scroll-indicator {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    animation: bounce 2s infinite; z-index: 2;
+  }
+  .scroll-indicator svg { width: 20px; height: 20px; opacity: 0.4; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* ===== SECTION TITLES ===== */
+  section { padding: 64px 0; }
+  .section-label {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+  }
   .section-title {
-    font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 8px;
+    font-size: clamp(22px, 4vw, 30px); font-weight: 800;
+    text-align: center; margin-bottom: 12px; letter-spacing: -0.5px;
+    line-height: 1.3;
   }
   .section-sub {
-    font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 32px;
+    font-size: 15px; color: var(--gray-500); text-align: center; margin-bottom: 48px;
+    line-height: 1.6;
   }
 
-  /* ─── Cards ─── */
-  .card-grid { display: grid; gap: 16px; }
-  .card-grid.three { grid-template-columns: 1fr; }
+  /* ===== PAIN POINTS ===== */
+  .pain-grid {
+    display: grid; gap: 12px; grid-template-columns: 1fr;
+  }
+  @media (min-width: 500px) { .pain-grid { grid-template-columns: 1fr 1fr; } }
+  .pain-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 24px;
+    display: flex; gap: 14px; align-items: flex-start;
+    transition: all 0.25s;
+  }
+  .pain-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: transparent; }
+  .pain-icon {
+    font-size: 24px; width: 44px; height: 44px; border-radius: var(--radius-sm);
+    background: var(--gray-50); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pain-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .pain-card p { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
 
-  .card {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px 24px;
-    box-shadow: var(--shadow-sm); transition: transform 0.2s;
+  /* ===== WHY SECTION ===== */
+  .why-grid {
+    display: grid; gap: 16px;
+    grid-template-columns: 1fr;
   }
-  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-  .card-icon { font-size: 28px; margin-bottom: 12px; }
-  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  @media (min-width: 500px) { .why-grid { grid-template-columns: repeat(3, 1fr); } }
+  .why-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 28px 24px;
+    text-align: center; transition: all 0.25s;
+  }
+  .why-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: transparent; }
+  .why-card-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .why-card-icon.one { background: #FFF3D6; }
+  .why-card-icon.two { background: #ECFDF5; }
+  .why-card-icon.three { background: #EFF6FF; }
+  .why-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .why-card p { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
 
-  /* ─── Testimonial ─── */
-  .testimonial {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px; margin-bottom: 16px;
-    box-shadow: var(--shadow-sm);
-  }
-  .testimonial-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-  }
-  .testimonial-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--cream); display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .testimonial-name { font-size: 14px; font-weight: 700; }
-  .testimonial-tag { font-size: 12px; color: var(--text-secondary); }
-  .testimonial-result {
-    display: inline-block; background: #E8F5E9; color: var(--green-tag);
-    padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 700;
-    margin-left: auto;
-  }
-  .testimonial p { font-size: 14px; color: var(--ink); line-height: 1.7; }
+  /* ===== RESULTS ===== */
+  .results-bg { background: var(--navy); color: #fff; padding: 64px 0; }
+  .results-bg .section-label { color: var(--gold); }
+  .results-bg .section-title { color: #fff; }
+  .results-bg .section-sub { color: rgba(255,255,255,0.55); }
 
-  /* ─── CTA Section ─── */
+  .result-cards { display: grid; gap: 20px; }
+  .result-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg); padding: 32px 28px;
+    transition: all 0.3s;
+  }
+  .result-card:hover {
+    background: rgba(255,255,255,0.07);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl);
+  }
+  .result-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+  }
+  .result-student {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .result-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, #E09600 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: var(--navy);
+  }
+  .result-name { font-size: 15px; font-weight: 700; }
+  .result-school { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .result-score {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 28px; font-weight: 900; letter-spacing: -1px;
+  }
+  .result-score .from { color: rgba(255,255,255,0.35); text-decoration: line-through; font-size: 24px; }
+  .result-score .arrow { color: var(--gold); font-size: 22px; }
+  .result-score .to {
+    color: var(--green);
+    background: var(--green-light);
+    padding: 2px 12px; border-radius: 20px;
+    font-size: 28px;
+  }
+  .result-quote {
+    font-size: 14px; color: rgba(255,255,255,0.65);
+    line-height: 1.7; font-style: italic;
+    border-left: 3px solid rgba(255,255,255,0.1);
+    padding-left: 14px;
+  }
+
+  /* ===== PROCESS ===== */
+  .process-steps { display: grid; gap: 24px; counter-reset: step; }
+  .process-step {
+    display: flex; gap: 20px; align-items: flex-start;
+    position: relative;
+  }
+  .process-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--navy); color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; flex-shrink: 0;
+  }
+  .process-step h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .process-step p { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+
+  /* ===== CTA ===== */
   .cta-section {
-    background: var(--ink); color: #fff; text-align: center;
-    border-radius: 20px; padding: 40px 24px; margin: 50px 20px;
+    background: linear-gradient(135deg, var(--navy) 0%, #0F2A52 100%);
+    color: #fff; text-align: center;
+    border-radius: var(--radius-xl); padding: 52px 32px; margin: 64px 24px;
+    position: relative; overflow: hidden;
   }
+  .cta-section::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .cta-section .container { position: relative; z-index: 2; }
   .cta-section .section-title { color: #fff; }
-  .cta-section .section-sub { color: rgba(255,255,255,0.7); }
+  .cta-section .section-sub { color: rgba(255,255,255,0.6); margin-bottom: 28px; }
+  .cta-benefits {
+    display: flex; gap: 24px; justify-content: center; margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .cta-benefit {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 14px; color: rgba(255,255,255,0.7);
+  }
+  .cta-benefit .check { color: var(--green); font-weight: 700; }
   .cta-btn {
-    display: inline-block; background: #fff; color: var(--warm-red);
-    padding: 14px 40px; border-radius: 28px;
-    font-size: 16px; font-weight: 700; text-decoration: none;
-    margin-top: 20px; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold); color: var(--navy);
+    padding: 17px 44px; border-radius: 30px;
+    font-size: 17px; font-weight: 700; text-decoration: none;
+    box-shadow: 0 8px 32px rgba(240,165,0,0.4);
+    transition: all 0.3s; cursor: pointer; border: none;
+    letter-spacing: -0.3px;
   }
-  .cta-btn:hover { transform: translateY(-2px); }
-  .cta-note { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 10px; }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240,165,0,0.55); }
+  .cta-note { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 14px; }
 
-  /* ─── Footer ─── */
+  /* ===== FOOTER ===== */
   footer {
-    text-align: center; padding: 32px 20px;
-    font-size: 13px; color: var(--text-secondary);
-    border-top: 1px solid var(--border);
+    text-align: center; padding: 40px 24px;
+    border-top: 1px solid var(--gray-200);
+    color: var(--gray-400); font-size: 13px;
   }
 
-  /* ─── Responsive ─── */
-  @media (min-width: 480px) {
-    .card-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-  }
-  @media (max-width: 480px) {
-    .hero h1 { font-size: 26px; }
-    .hero-stats { gap: 24px; }
-    .card-grid.three { grid-template-columns: 1fr; }
-  }
-
-  /* ─── Smooth scroll ─── */
-  html { scroll-behavior: smooth; }
-
-  /* ─── WeChat copy modal ─── */
+  /* ===== MODAL ===== */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 24px;
   }
   .modal-overlay.show { display: flex; }
   .modal {
-    background: #fff; border-radius: 20px; padding: 32px 28px;
-    text-align: center; max-width: 320px; width: 90%;
+    background: #fff; border-radius: var(--radius-lg); padding: 36px 32px;
+    text-align: center; max-width: 380px; width: 100%;
+    box-shadow: var(--shadow-xl);
   }
-  .modal h3 { font-size: 18px; margin-bottom: 8px; }
-  .modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+  .modal-icon { font-size: 48px; margin-bottom: 8px; }
+  .modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .modal p { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; }
   .modal-wechat {
-    display: inline-block; background: var(--cream);
-    padding: 12px 28px; border-radius: 12px;
-    font-size: 18px; font-weight: 700; letter-spacing: 2px;
-    cursor: pointer; user-select: all; margin-bottom: 4px;
+    display: inline-block; background: var(--gray-50);
+    padding: 14px 32px; border-radius: var(--radius);
+    font-size: 20px; font-weight: 700; letter-spacing: 1px;
+    cursor: pointer; user-select: all; margin-bottom: 6px;
+    border: 2px dashed var(--gray-200);
+    transition: all 0.2s;
   }
-  .modal-hint { font-size: 12px; color: var(--text-secondary); }
+  .modal-wechat:active { background: var(--gold-light); border-color: var(--gold); }
+  .modal-hint { font-size: 12px; color: var(--gray-400); }
+  .modal-close {
+    margin-top: 16px; font-size: 13px; color: var(--gray-400);
+    cursor: pointer; border: none; background: none;
+  }
+
+  /* ===== STICKY MOBILE CTA ===== */
+  .sticky-cta {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(20px);
+    border-top: 1px solid var(--gray-200);
+    padding: 12px 20px; text-align: center;
+  }
+  @media (max-width: 640px) { .sticky-cta { display: block; } }
+  .sticky-cta-btn {
+    display: block; width: 100%;
+    background: var(--gold); color: var(--navy);
+    border: none; padding: 14px; border-radius: 28px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sticky-cta-btn:active { background: #E09600; transform: scale(0.98); }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
+<!-- NAV -->
 <nav class="nav">
   <div class="container">
-    <span class="nav-logo">张老师英语</span>
-    <button class="nav-cta" onclick="openModal()">约试听</button>
+    <span class="nav-logo"><span class="nav-logo-dot"></span>张老师英语</span>
+    <button class="nav-cta" onclick="openModal()">加微信</button>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <header class="hero">
   <div class="container">
-    <span class="hero-tag">📚 初高中英语</span>
-    <h1>包头一线英语老师<br>专注<span class="accent">中考·高考</span>提分</h1>
-    <p class="hero-sub">不包装、不忽悠，用成绩说话</p>
+    <span class="hero-badge">✦ 包头 · 初高中英语</span>
+    <h1>孩子英语<span class="highlight">提分</span>，<br>不是靠刷题，是靠对的方法</h1>
+    <p class="hero-sub">10年一线教学，不画饼，不套路。<br>试听一节课，你自己判断这个老师值不值。</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <div class="hero-stat-num">10年+</div>
@@ -228,99 +412,211 @@
         <div class="hero-stat-label">提分率</div>
       </div>
     </div>
-    <a href="#contact" class="hero-btn">预约免费试听</a>
-    <p class="hero-note">试听不满意不收费 · 名额有限</p>
+    <button class="hero-btn" onclick="openModal()">📱 预约免费试听</button>
+    <p class="hero-note">不收费 · 不满意不报名 · 限包头地区</p>
+  </div>
+  <div class="scroll-indicator">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </div>
 </header>
 
-<!-- Three Features -->
+<!-- PAIN POINTS -->
 <section>
   <div class="container">
-    <h2 class="section-title">为什么家长选我</h2>
-    <p class="section-sub">不是大机构，但比大机构更负责</p>
-    <div class="card-grid three">
-      <div class="card">
-        <div class="card-icon">🎯</div>
-        <h3>只教英语一科</h3>
-        <p>不像机构什么科目都做。我只钻研英语，所有精力放在一个方向上，对中高考考点烂熟于心。</p>
+    <h2 class="section-title">孩子英语上不去，<br>多半不是不够努力</h2>
+    <p class="section-sub">我带过的两百多个学生里，提不上去的原因就这几种</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">🔤</div>
+        <div>
+          <h4>单词背了就忘</h4>
+          <p>死记硬背没有用。缺的是「在句子里记 + 间隔复习」的方法，对的方法一周顶过去一个月。</p>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-icon">📋</div>
-        <h3>一人盯全程</h3>
-        <p>从试听到中/高考，每个学生都是我亲自带。不存在「好老师试听，实习生上课」的情况。</p>
+      <div class="pain-card">
+        <div class="pain-icon">📖</div>
+        <div>
+          <h4>完形填空一错一串</h4>
+          <p>80% 的学生凭语感硬猜。其实看选项后面跟 to do 还是 do，就能直接排除一半选项。</p>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-icon">📊</div>
-        <h3>每次课有反馈</h3>
-        <p>每次课后都会跟家长沟通孩子的情况——不是模板群发，是真正了解你孩子的学习状态。</p>
+      <div class="pain-card">
+        <div class="pain-icon">⏱️</div>
+        <div>
+          <h4>阅读理解总是做不完</h4>
+          <p>不是速度慢，是方法错了。先看题→定位段落→抓主干，练一个月速度提 40%。</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">✍️</div>
+        <div>
+          <h4>作文只会套模板</h4>
+          <p>套模板最多及格分。真正提分靠「拆句式 + 逐句批改」，知道自己的句子哪里扣分才能进步。</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Results -->
-<section style="background: var(--cream);">
+<!-- WHY ME -->
+<section style="background: var(--white);">
   <div class="container">
-    <h2 class="section-title">学生真实提分案例</h2>
-    <p class="section-sub">每个数据背后都是一个家庭</p>
-    <div class="testimonial">
-      <div class="testimonial-header">
-        <div class="testimonial-avatar">👨‍🎓</div>
-        <div>
-          <div class="testimonial-name">刘同学 · 高三</div>
-          <div class="testimonial-tag">北重五中</div>
-        </div>
-        <span class="testimonial-result">44→98</span>
+    <span class="section-label">Why Me</span>
+    <h2 class="section-title">为什么家长选我</h2>
+    <p class="section-sub">不是大机构，但比大机构更懂你孩子</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-icon one">🎯</div>
+        <h4>只教英语一科</h4>
+        <p>不搞全科辅导。所有精力压在英语上，中高考考点烂熟于心。</p>
       </div>
-      <p>"高三开学摸底44分，孩子对英语完全没信心。张老师从最基础的语法框架帮他重新搭建，一步一个脚印，不赶进度、不跳步骤。高考英语98分，家长说这是三年来最大的惊喜。"</p>
+      <div class="why-card">
+        <div class="why-card-icon two">👩‍🏫</div>
+        <h4>我亲自带全程</h4>
+        <p>不存在「试听好老师，正式实习生」。从第一节课到中高考，每个学生都是我盯。</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon three">📊</div>
+        <h4>每次课给反馈</h4>
+        <p>不是模板群发。每次课后单独跟家长沟通孩子这堂课的真实表现。</p>
+      </div>
     </div>
-    <div class="testimonial">
-      <div class="testimonial-header">
-        <div class="testimonial-avatar">👦</div>
-        <div>
-          <div class="testimonial-name">李同学 · 高二</div>
-          <div class="testimonial-tag">包钢一中</div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-bg">
+  <div class="container">
+    <span class="section-label">Real Results</span>
+    <h2 class="section-title">他们能做到，你的孩子也能</h2>
+    <p class="section-sub">每个数字背后都是一个真实的家庭</p>
+    <div class="result-cards">
+      <!-- 刘同学 -->
+      <div class="result-card">
+        <div class="result-top">
+          <div class="result-student">
+            <div class="result-avatar">刘</div>
+            <div>
+              <div class="result-name">刘同学 · 高三</div>
+              <div class="result-school">北重五中</div>
+            </div>
+          </div>
+          <div class="result-score">
+            <span class="from">44</span>
+            <span class="arrow">→</span>
+            <span class="to">98</span>
+          </div>
         </div>
-        <span class="testimonial-result">105→128</span>
+        <p class="result-quote">"高三开学摸底44分，孩子对英语完全没信心。张老师从最基础的语法框架帮他重新搭建，不赶进度不跳步骤。高考98分，家长说这是三年来最大惊喜。"</p>
       </div>
-      <p>"孩子底子不差但分数一直上不去，张老师一针见血指出是完形填空和写作拖后腿。针对性练了三个月，期末从105提到128，班级排名进了前十。"</p>
+      <!-- 李同学 -->
+      <div class="result-card">
+        <div class="result-top">
+          <div class="result-student">
+            <div class="result-avatar">李</div>
+            <div>
+              <div class="result-name">李同学 · 高二</div>
+              <div class="result-school">包钢一中</div>
+            </div>
+          </div>
+          <div class="result-score">
+            <span class="from">105</span>
+            <span class="arrow">→</span>
+            <span class="to">128</span>
+          </div>
+        </div>
+        <p class="result-quote">"底子不差但分数一直上不去。张老师一眼看出是完形填空和写作拖后腿，针对性练了三个月。期末从105提到128，班级排名进前十。"</p>
+      </div>
+      <!-- 王同学 -->
+      <div class="result-card">
+        <div class="result-top">
+          <div class="result-student">
+            <div class="result-avatar">王</div>
+            <div>
+              <div class="result-name">王同学 · 初三</div>
+              <div class="result-school">包钢三中</div>
+            </div>
+          </div>
+          <div class="result-score">
+            <span class="from">88</span>
+            <span class="arrow">→</span>
+            <span class="to">110+</span>
+          </div>
+        </div>
+        <p class="result-quote">"初三上学期才开始补，时间很紧。张老师帮孩子理出高频考点，每次课后精准布置练习。半年从88提到110+，考上了理想高中。"</p>
+      </div>
     </div>
-    <div class="testimonial">
-      <div class="testimonial-header">
-        <div class="testimonial-avatar">👩</div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section>
+  <div class="container">
+    <span class="section-label">How It Works</span>
+    <h2 class="section-title">怎么开始</h2>
+    <p class="section-sub">三步，没有套路</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-num">1</div>
         <div>
-          <div class="testimonial-name">王同学 · 初三</div>
-          <div class="testimonial-tag">包钢三中</div>
+          <h4>加微信约试听时间</h4>
+          <p>告诉我孩子在哪个学校、几年级、英语大概什么情况。我帮你安排一节试听课。</p>
         </div>
-        <span class="testimonial-result">88→110+</span>
       </div>
-      <p>"初三上学期才开始补，时间很紧。张老师帮孩子理出高频考点，每次课后布置精准练习，半年从88提到110+。如果能早一年开始会更好，但还是考上了理想的高中。"</p>
+      <div class="process-step">
+        <div class="process-num">2</div>
+        <div>
+          <h4>来试听，我给孩子做诊断</h4>
+          <p>试听课上我会观察孩子真实的问题在哪——是词汇量不够，还是方法不对？课后直接跟家长沟通，给具体建议。</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-num">3</div>
+        <div>
+          <h4>觉得合适就继续，不合适不勉强</h4>
+          <p>试听完家长自己判断。觉得这个老师对孩子有用就接着上，不合适一分钱不收，不耽误彼此时间。</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <div class="container">
-  <div class="cta-section" id="contact">
-    <h2 class="section-title">想试听一节课看看？</h2>
-    <p class="section-sub">试听课免费，课后我会跟您沟通孩子的情况和学习建议——即使最后不报名也没关系</p>
-    <a href="javascript:openModal()" class="cta-btn">📱 加微信预约试听</a>
-    <p class="cta-note">限包头地区 · 初高中英语</p>
+  <div class="cta-section">
+    <div class="container" style="padding:0;">
+      <h2 class="section-title">想先试听一节课看看？</h2>
+      <p class="section-sub">免费试听，课后我会跟您详细沟通孩子的学习情况和提升建议</p>
+      <div class="cta-benefits">
+        <div class="cta-benefit"><span class="check">✓</span> 不收费</div>
+        <div class="cta-benefit"><span class="check">✓</span> 不满意不报名</div>
+        <div class="cta-benefit"><span class="check">✓</span> 限包头地区</div>
+      </div>
+      <button class="cta-btn" onclick="openModal()">📱 加微信预约试听</button>
+      <p class="cta-note">添加时备注「试听」，我看到第一时间通过</p>
+    </div>
   </div>
 </div>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
   <p>张老师英语 · 包头初高中英语一对一辅导</p>
 </footer>
 
-<!-- WeChat Modal -->
+<!-- STICKY MOBILE CTA -->
+<div class="sticky-cta">
+  <button class="sticky-cta-btn" onclick="openModal()">📱 加微信预约免费试听</button>
+</div>
+
+<!-- WECHAT MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
+    <div class="modal-icon">💬</div>
     <h3>张老师的微信</h3>
     <p>长按复制微信号，添加时备注「试听」</p>
     <div class="modal-wechat" id="wechatId" onclick="copyWechat()">GoldenLife-4everS</div>
     <p class="modal-hint">👆 点击复制微信号</p>
+    <button class="modal-close" onclick="closeModal()">关闭</button>
   </div>
 </div>
 
@@ -328,16 +624,25 @@
   function openModal() {
     document.getElementById('modal').classList.add('show');
   }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  }
   document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
+    if (e.target === this) closeModal();
   });
   function copyWechat() {
     const el = document.getElementById('wechatId');
-    navigator.clipboard.writeText(el.textContent).then(() => {
-      el.textContent = '已复制！去微信粘贴';
-      setTimeout(() => { el.textContent = 'GoldenLife-4everS'; }, 2000);
+    const text = 'GoldenLife-4everS';
+    navigator.clipboard.writeText(text).then(() => {
+      el.textContent = '✅ 已复制！去微信粘贴';
+      el.style.background = '#ECFDF5';
+      el.style.borderColor = '#059669';
+      setTimeout(() => {
+        el.textContent = 'GoldenLife-4everS';
+        el.style.background = '';
+        el.style.borderColor = '';
+      }, 2500);
     }).catch(() => {
-      // Fallback
       const range = document.createRange();
       range.selectNode(el);
       window.getSelection().removeAllRanges();
@@ -345,5 +650,6 @@
     });
   }
 </script>
+
 </body>
 </html>
